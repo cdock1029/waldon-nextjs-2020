@@ -1,45 +1,24 @@
-import fetch from '@brillout/fetch'
-import { GetStaticPaths, GetStaticProps } from 'next'
 import { useRouter } from 'next/router'
+import { useQuery } from 'react-query'
 
-const data = [
-  { id: 1, name: 'Acme' },
-  { id: 2, name: 'Westbury Park' },
-]
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const response = await fetch(`${process.env.URL}/api/properties`)
-  const result = await response.json()
-  const properties = result.data
-  return {
-    paths: properties.map((p) => ({
-      params: { propertyId: String(p.id) },
-    })),
-    fallback: true,
-  }
+async function fetchProperty(key, propertyId: string) {
+  const result = await fetch(`/api/properties/${propertyId}`)
+  const json = await result.json()
+  return json.data
 }
 
-export async function getStaticProps({ params: { propertyId } }) {
-  const response = await fetch(
-    `${process.env.URL}/api/properties/${propertyId}`
-  )
-  const result = await response.json()
-
-  return {
-    props: { property: result.data },
-  }
-}
-
-function Property({ property }) {
+function Property() {
   const {
-    // query: { propertyId },
-    isFallback,
+    query: { propertyId },
   } = useRouter()
-  // console.log('log router:', { propertyId })
+  const { data, status } = useQuery(
+    ['properties', propertyId as string],
+    fetchProperty
+  )
   return (
     <div>
-      {isFallback ? <h1>LOADING...</h1> : null}
-      <h1>Property: {property.name}</h1>
+      {status === 'loading' ? <h1>LOADING...</h1> : null}
+      <h1>Property: {data && data.name}</h1>
     </div>
   )
 }
