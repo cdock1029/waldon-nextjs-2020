@@ -1,0 +1,17 @@
+{
+  "name": "waldon",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "git@github.com:cdock1029/waldon.git",
+  "author": "Conor Dockry <conordockry@gmail.com>",
+  "scripts": {
+    "build": "yarn workspace @waldon/app run build",
+    "start": "yarn workspace @waldon/app run start",
+    "dev": "yarn workspace @waldon/app run dev"
+  },
+  "workspaces": ["packages/*"],
+  "engines": {
+    "node": "12.x"
+  },
+  "license": "MIT"
+}
