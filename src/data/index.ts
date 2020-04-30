@@ -8,3 +8,5 @@ export function cache(res: NextApiResponse): NextApiResponse {
   res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
   return res
 }
+
+export { verifyToken } from './utils'

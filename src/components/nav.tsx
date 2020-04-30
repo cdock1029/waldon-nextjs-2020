@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useAuth, auth } from 'data/firebase'
 
 const links = [
   { href: '/', label: 'Home' },
@@ -6,6 +7,11 @@ const links = [
 ]
 
 export default function Nav() {
+  const { user } = useAuth()
+
+  function logOut() {
+    auth.signOut()
+  }
   return (
     <nav>
       <ul className="flex justify-between items-center p-8">
@@ -22,6 +28,7 @@ export default function Nav() {
               </Link>
             </li>
           ))}
+          {user && <button onClick={logOut}>Log out</button>}
         </ul>
       </ul>
     </nav>

@@ -4,14 +4,32 @@
   "private": true,
   "repository": "git@github.com:cdock1029/waldon.git",
   "author": "Conor Dockry <conordockry@gmail.com>",
+  "license": "MIT",
   "scripts": {
-    "build": "yarn workspace @waldon/app run build",
-    "start": "yarn workspace @waldon/app run start",
-    "dev": "yarn workspace @waldon/app run dev"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
-  "workspaces": ["packages/*"],
+  "dependencies": {
+    "@databases/pg": "^2.1.1",
+    "firebase": "^7.14.2",
+    "firebase-admin": "^8.11.0",
+    "next": "^9.3.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-query": "^1.2.9"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^2.1.2",
+    "@types/react": "^16.9.34",
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "^1.4.0",
+    "typescript": "^3.8.3"
+  },
+  "browserslist": [
+    "last 1 chrome versions"
+  ],
   "engines": {
     "node": "12.x"
-  },
-  "license": "MIT"
+  }
 }

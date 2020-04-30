@@ -6,7 +6,12 @@ export default function Index() {
     <div className="hero">
       <h1 className="title">Next JS & Tailwind CSS</h1>
       <p>Val: {val}</p>
-      <button onClick={() => setVal((val) => val + 1)}>Inc</button>
+      <button
+        onClick={() => setVal((val) => val + 1)}
+        className="border px-3 py-1"
+      >
+        Inc
+      </button>
     </div>
   )
 }

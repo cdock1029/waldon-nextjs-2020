@@ -1,15 +1,19 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
+import { useAuth } from 'data/firebase'
 
-async function fetchProperties(key) {
-  const result = await fetch('/api/properties')
+async function fetchProperties(key, token) {
+  const result = await fetch('/api/properties', {
+    headers: { Authorization: `Bearer ${token}` },
+  })
   const json = await result.json()
   return json.data
 }
 
 function Properties() {
-  const { data, status } = useQuery<any[], string>(
-    'properties',
+  const { tokenResult } = useAuth()
+  const { data, status } = useQuery<any[], [string, string]>(
+    ['properties', tokenResult!.token],
     fetchProperties
   )
   return (
@@ -24,7 +28,7 @@ function Properties() {
               href="/properties/[propertyId]"
               as={`/properties/${p.id}`}
             >
-              <a className="underline font-semibold text-purple-500">
+              <a className="underline font-semibold text-purple-600">
                 {p.name}
               </a>
             </Link>
