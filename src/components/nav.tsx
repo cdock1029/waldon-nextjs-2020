@@ -4,6 +4,7 @@ import { useAuth, auth } from 'data/firebase'
 const links = [
   { href: '/', label: 'Home' },
   { href: '/properties', label: 'Properties' },
+  { href: '/public', label: 'Public fetch' },
 ]
 
 export default function Nav() {
