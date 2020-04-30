@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import * as admin from 'firebase-admin'
 
 const credential = JSON.parse(
@@ -11,7 +12,6 @@ if (!admin.apps.length) {
   })
 }
 
-import type { NextApiRequest } from 'next'
 export async function verifyToken(req: NextApiRequest): Promise<Boolean> {
   if (req.headers && req.headers.authorization) {
     const parts = req.headers.authorization.split(' ')
@@ -26,4 +26,9 @@ export async function verifyToken(req: NextApiRequest): Promise<Boolean> {
     }
   }
   return false
+}
+
+export function cache(res: NextApiResponse): NextApiResponse {
+  res.setHeader('Cache-Control', 'public, s-maxage=1, stale-while-revalidate')
+  return res
 }
