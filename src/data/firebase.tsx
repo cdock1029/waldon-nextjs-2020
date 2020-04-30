@@ -24,7 +24,7 @@ export function signInWithPopup() {
 }
 
 const AuthContext = createContext<{
-  user?: firebase.User
+  user?: firebase.User | null
   tokenResult?: firebase.auth.IdTokenResult
 }>({})
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const tokenResult = await user.getIdTokenResult()
         setAuthState({ user, tokenResult })
       } else {
-        setAuthState({})
+        setAuthState({ user: null })
       }
     })
   }, [])

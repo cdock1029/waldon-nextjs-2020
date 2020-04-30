@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
 import { useAuth } from 'data/firebase'
+import { Loading } from 'components'
 
 async function fetchProperties(key, token) {
   const result = await fetch('/api/properties', {
@@ -12,14 +13,13 @@ async function fetchProperties(key, token) {
 
 function Properties() {
   const { tokenResult } = useAuth()
-  const { data, status } = useQuery<any[], [string, string]>(
+  const { data } = useQuery<any[], [string, string]>(
     ['properties', tokenResult!.token],
     fetchProperties
   )
   return (
     <div>
       <h1>Properties</h1>
-      {status === 'loading' && <h1>Loading...</h1>}
       <div className="flex flex-col">
         {data &&
           data.map((p) => (

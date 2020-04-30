@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { unitById } from 'data'
+import { unitById, verifyToken } from 'data'
 
 export default async function unit(req: NextApiRequest, res: NextApiResponse) {
+  const verified = await verifyToken(req)
+  if (!verified) {
+    return res.status(401).json({ error: 'Not authorized' })
+  }
   const {
     query: { unitId },
   } = req

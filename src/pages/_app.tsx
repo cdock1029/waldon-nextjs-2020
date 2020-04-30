@@ -1,6 +1,6 @@
 import Layout from 'components/layout'
 import 'styles/index.css'
-import { useAuth, AuthProvider } from 'data/firebase'
+import { AuthProvider } from 'data/firebase'
 
 function MyApp({ Component, pageProps }) {
   return (
