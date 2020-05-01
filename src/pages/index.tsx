@@ -1,7 +1,8 @@
-import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { format } from 'utils'
 import { useAuth } from 'data/firebase'
+import Loading from 'components/loading'
+import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, token: string) {
   const result = await fetch('/api/dashboard', {
@@ -22,27 +23,25 @@ export default function Index() {
   }
   return (
     <div>
-      <h2 className="flex items-baseline py-8 text-3xl">
-        <span>Active leases</span>
-        {status === 'loading' && <div className="ml-4">...</div>}
-      </h2>
-      <div className="shadow rounded bg-gray-100">
-        <table className="table-auto text-sm w-full border-collapse">
-          <thead className="text-gray-600 uppercase">
-            <tr>
-              <th></th>
-              <th align="right">Unit</th>
-              <th align="left">Tenants</th>
-              <th align="right">Start</th>
-              <th align="right">End</th>
-              <th align="right">Rent</th>
-              <th align="right">Balance</th>
-              <th align="center">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="font-mono">
-            {data &&
-              data.map((lease) => (
+      {status === 'loading' && <Loading />}
+      <h2 className="py-8 text-3xl">Active leases</h2>
+      {data && (
+        <div className="shadow rounded bg-gray-100">
+          <table className="table-auto text-sm w-full border-collapse">
+            <thead className="text-gray-600 uppercase">
+              <tr>
+                <th></th>
+                <th align="right">Unit</th>
+                <th align="left">Tenant</th>
+                <th align="right">Start</th>
+                <th align="right">End</th>
+                <th align="right">Rent</th>
+                <th align="right">Balance</th>
+                <th align="center">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="font-mono">
+              {data.map((lease) => (
                 <tr key={lease.id} className="odd:bg-gray-200 even:bg-white">
                   <td align="center">
                     <button className="shadow text-gray-600">&#9660;</button>
@@ -56,17 +55,11 @@ export default function Index() {
                   <td align="right">{lease.rent}</td>
                   <td align="right">{lease.balance}</td>
                   <td align="center">
-                    <select>
-                      <option value="">Action</option>
-                      <option value="pay-rent">Pay rent</option>
-                      <option value="pay-balance">Pay balance</option>
-                      <option value="pay-custome">Pay custom...</option>
-                      <option value="pay-custome">Add charge...</option>
-                    </select>
+                    <ActionsMenu rent={lease.rent} balance={lease.balance} />
                   </td>
                 </tr>
               ))}
-            {/* <tr>
+              {/* <tr>
               <td colSpan={8} className="expanded-cell p-0">
                 <div className="bg-green-200 p-8">
                   <table className="text-sm text-gray-800 table-auto w-full border-collapse">
@@ -89,26 +82,27 @@ export default function Index() {
                 </div>
               </td>
             </tr> */}
-            {/*<tr className="last:rounded-b-sm odd:bg-gray-200 even:bg-gray-100">*/}
-            <tr>
-              <td align="center">
-                <button>X</button>
-              </td>
-              <td align="right">31-102</td>
-              <td>Daffy Duck</td>
-              <td align="right">{format('2019-04-01')}</td>
-              <td align="right">{format('2020-04-01')}</td>
-              <td align="right">$700.00</td>
-              <td align="right" className="text-red-900">
-                $30.00
-              </td>
-              <td align="center">
-                <button>***</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              {/*<tr className="last:rounded-b-sm odd:bg-gray-200 even:bg-gray-100">*/}
+              <tr>
+                <td align="center">
+                  <button>X</button>
+                </td>
+                <td align="right">31-102</td>
+                <td>Daffy Duck</td>
+                <td align="right">{format('2019-04-01')}</td>
+                <td align="right">{format('2020-04-01')}</td>
+                <td align="right">$700.00</td>
+                <td align="right" className="text-red-900">
+                  $30.00
+                </td>
+                <td align="center">
+                  <button>***</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
       <style jsx>{`
         td,
         th {
@@ -128,5 +122,25 @@ export default function Index() {
         }
       `}</style>
     </div>
+  )
+}
+
+function ActionsMenu({ rent, balance }) {
+  return (
+    <Menu>
+      <MenuButton>
+        Actions <span aria-hidden>▾</span>
+      </MenuButton>
+      <MenuList>
+        {balance !== '$0.00' && (
+          <MenuItem onSelect={() => alert('Pay balance')}>
+            Pay {balance}
+          </MenuItem>
+        )}
+        <MenuItem onSelect={() => alert('Pay rent')}>Pay {rent}</MenuItem>
+        <MenuItem onSelect={() => alert('Pay custom')}>Pay custom...</MenuItem>
+        <MenuItem onSelect={() => alert('Pay custom')}>Add charge...</MenuItem>
+      </MenuList>
+    </Menu>
   )
 }

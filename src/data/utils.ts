@@ -35,7 +35,7 @@ export async function verifyToken(
 export function cache(res: NextApiResponse): NextApiResponse {
   res.setHeader(
     'Cache-Control',
-    'private, max-age=1, s-maxage=1, stale-while-revalidate=3600'
+    'private, max-age=1, stale-while-revalidate=3600'
   )
   return res
 }

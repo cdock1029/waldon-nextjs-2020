@@ -17,11 +17,18 @@ function Loading() {
     }
   }, [])
   return (
-    <div hidden ref={ref}>
+    <div className="loading-spinner" key="loading-spinner" hidden ref={ref}>
       <div className={styles.ldsRipple}>
         <div></div>
         <div></div>
       </div>
+      <style jsx>{`
+        & {
+          position: fixed;
+          top: 0rem;
+          left: 50%;
+        }
+      `}</style>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { useAuth } from 'data/firebase'
 import Header from './header'
-import Login from './login'
 import Loading from './loading'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
