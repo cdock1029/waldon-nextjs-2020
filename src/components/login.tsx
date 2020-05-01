@@ -1,9 +1,9 @@
 import { signInWithPopup } from 'data/firebase'
-function Login() {
+function Login(props) {
   return (
-    <div>
-      <button onClick={signInWithPopup}>Login</button>
-    </div>
+    <button {...props} onClick={signInWithPopup}>
+      Login
+    </button>
   )
 }
 

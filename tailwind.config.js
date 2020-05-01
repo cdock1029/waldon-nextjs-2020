@@ -2,6 +2,16 @@ module.exports = {
   theme: {
     extend: {},
   },
-  variants: {},
+  variants: {
+    backgroundColor: [
+      'responsive',
+      'first',
+      'last',
+      'even',
+      'odd',
+      'hover',
+      'focus',
+    ],
+  },
   plugins: [require('@tailwindcss/ui')],
 }
