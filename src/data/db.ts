@@ -1,7 +1,8 @@
 import connect from '@databases/pg'
 
-const db = connect(process.env.DATABASE_URL, {
-  noDuplicateDatabaseObjectsWarning: true,
-})
+let globalAny: any = global
 
-export default db
+globalAny.db =
+  globalAny.db || connect(process.env.DATABASE_URL, { poolSize: 2 })
+
+export default globalAny.db

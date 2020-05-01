@@ -20,7 +20,7 @@ function Properties() {
   return (
     <div>
       <h1>Properties</h1>
-      <div className="flex flex-col">
+      <div className="flex flex-col items-start">
         {data &&
           data.map((p) => (
             <Link
@@ -28,9 +28,7 @@ function Properties() {
               href="/properties/[propertyId]"
               as={`/properties/${p.id}`}
             >
-              <a className="underline font-semibold text-purple-600">
-                {p.name}
-              </a>
+              <a className="underline font-semibold">{p.name}</a>
             </Link>
           ))}
       </div>

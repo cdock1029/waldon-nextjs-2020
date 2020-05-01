@@ -26,7 +26,6 @@ function Property() {
     ['properties', propertyId as string, tokenResult!.token],
     fetchProperty
   )
-  console.log({ data })
   return (
     <div>
       <h1 className="flex items-start">

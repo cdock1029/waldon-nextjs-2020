@@ -7,17 +7,13 @@ export default function Nav() {
     auth.signOut()
   }
   return (
-    <header className="flex items-center bg-teal-200 px-8 py-2">
+    <header className="fixed inset-x-0 top-0 h-16 flex items-center bg-teal-100 px-8">
       <nav className="flex-1 flex items-center text-lg">
         <Link href="/">
-          <a className="mr-8 text-purple-600 p-2 font-semibold underline">
-            Home
-          </a>
+          <a className="mr-8 p-2 font-semibold">Home</a>
         </Link>
         <Link href="/properties">
-          <a className="underline font-semibold p-2 text-purple-600">
-            Properties
-          </a>
+          <a className="font-semibold p-2">Properties</a>
         </Link>
       </nav>
       {user && <button onClick={logOut}>Log out</button>}
