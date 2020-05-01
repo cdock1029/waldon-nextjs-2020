@@ -1,11 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Dashboard } from 'data'
+import { Dashboard, cache, verifyToken } from 'data'
 
 export default async function dashboard(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  res.status(200).json({
-    data: await Dashboard.leases(),
-  })
+  if (await verifyToken(req, res)) {
+    cache(res)
+      .status(200)
+      .json({
+        data: await Dashboard.leases(),
+      })
+  }
 }

@@ -5,11 +5,8 @@ export default async function properties(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const verified = await verifyToken(req)
-  if (!verified) {
-    return res.status(401).json({ error: 'Not authorized' })
+  if (await verifyToken(req, res)) {
+    const result = await propertyList()
+    cache(res).status(200).json(result)
   }
-
-  const result = await propertyList()
-  return cache(res).status(200).json(result)
 }

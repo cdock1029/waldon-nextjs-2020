@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { format } from 'utils'
+import { useAuth } from 'data/firebase'
 
-async function fetchData(key) {
-  const result = await fetch('/api/dashboard').then((res) => res.json())
+async function fetchData(key, token: string) {
+  const result = await fetch('/api/dashboard', {
+    headers: { authorization: `Bearer ${token}` },
+  }).then((res) => res.json())
   return result.data
 }
 
 export default function Index() {
-  const { data, status, error } = useQuery<any[], string>(
-    'dashboard',
+  const { tokenResult } = useAuth()
+  const { data, status, error } = useQuery<any[], [string, string]>(
+    ['dashboard', tokenResult!.token],
     fetchData
   )
 

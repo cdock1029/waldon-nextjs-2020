@@ -12,7 +12,10 @@ if (!admin.apps.length) {
   })
 }
 
-export async function verifyToken(req: NextApiRequest): Promise<Boolean> {
+export async function verifyToken(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<Boolean> {
   if (req.headers && req.headers.authorization) {
     const parts = req.headers.authorization.split(' ')
     if (parts.length === 2 && parts[0] === 'Bearer') {
@@ -25,6 +28,7 @@ export async function verifyToken(req: NextApiRequest): Promise<Boolean> {
       }
     }
   }
+  res.status(401).json({ error: 'Not authorized' })
   return false
 }
 

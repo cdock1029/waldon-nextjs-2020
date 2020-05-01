@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { tenantList, cache } from 'data'
+import { tenantList, cache, verifyToken } from 'data'
 
 export default async function tenants(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const result = await tenantList()
-  return cache(res).status(200).json(result)
+  if (await verifyToken(req, res)) {
+    const result = await tenantList()
+    cache(res).status(200).json(result)
+  }
 }
