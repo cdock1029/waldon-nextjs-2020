@@ -23,8 +23,8 @@ export default function Index() {
         {status === 'loading' && <div className="ml-4">...</div>}
       </h2>
       <div className="shadow rounded bg-gray-100">
-        <table className="text-gray-800 table-auto w-full border-collapse">
-          <thead>
+        <table className="table-auto text-sm w-full border-collapse">
+          <thead className="text-gray-600 uppercase">
             <tr>
               <th></th>
               <th align="right">Unit</th>
@@ -36,23 +36,29 @@ export default function Index() {
               <th align="center">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-mono text-sm">
+          <tbody className="font-mono">
             {data &&
               data.map((lease) => (
                 <tr key={lease.id} className="odd:bg-gray-200 even:bg-white">
                   <td align="center">
-                    <button>X</button>
+                    <button className="shadow text-gray-600">&#9660;</button>
                   </td>
                   <td align="right">{lease.unit}</td>
                   <td className="tenant" title={lease.tenant}>
-                    <div>{lease.tenant}</div>
+                    <div className="select-all">{lease.tenant}</div>
                   </td>
                   <td align="right">{format(lease.start_date)}</td>
                   <td align="right">{format(lease.end_date)}</td>
                   <td align="right">{lease.rent}</td>
                   <td align="right">{lease.balance}</td>
                   <td align="center">
-                    <button>***</button>
+                    <select>
+                      <option value="">Action</option>
+                      <option value="pay-rent">Pay rent</option>
+                      <option value="pay-balance">Pay balance</option>
+                      <option value="pay-custome">Pay custom...</option>
+                      <option value="pay-custome">Add charge...</option>
+                    </select>
                   </td>
                 </tr>
               ))}
@@ -89,7 +95,9 @@ export default function Index() {
               <td align="right">{format('2019-04-01')}</td>
               <td align="right">{format('2020-04-01')}</td>
               <td align="right">$700.00</td>
-              <td align="right">$30.00</td>
+              <td align="right" className="text-red-900">
+                $30.00
+              </td>
               <td align="center">
                 <button>***</button>
               </td>
@@ -101,7 +109,7 @@ export default function Index() {
         td,
         th {
           /* border-bottom: 1px solid #ccc;*/
-          padding: 1rem;
+          padding: 1.5rem 1rem;
         }
         td.expanded-cell {
           padding: 0;

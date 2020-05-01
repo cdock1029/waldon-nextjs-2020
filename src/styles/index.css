@@ -16,5 +16,9 @@ body {
   @apply m-0 font-sans bg-gray-300 overflow-hidden;
 }
 
+button {
+  @apply cursor-pointer shadow;
+}
+
 /* purgecss end ignore */
 @tailwind utilities;
