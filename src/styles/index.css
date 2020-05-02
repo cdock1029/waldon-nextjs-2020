@@ -1,8 +1,3 @@
-/*! purgecss start ignore */
-@import '~@reach/menu-button/styles.css';
-
-@tailwind components;
-
 html {
   box-sizing: border-box;
 }
@@ -11,14 +6,16 @@ html {
 *:after {
   box-sizing: inherit;
 }
-
 body {
   @apply m-0 font-sans bg-gray-300 overflow-hidden;
 }
+
+@import '~@reach/menu-button/styles.css';
+
+@tailwind components;
 
 button {
   @apply cursor-pointer shadow;
 }
 
-/*! purgecss end ignore */
 @tailwind utilities;
