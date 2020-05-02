@@ -1,4 +1,4 @@
-import { useAuth } from 'data/firebase'
+import { useAuth } from 'client/firebase'
 import Header from './header'
 import Loading from './loading'
 

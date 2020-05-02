@@ -22,12 +22,12 @@ const provider = new firebase.auth.GoogleAuthProvider()
 let flagNewUser = false
 export function signInWithPopup() {
   return auth.signInWithPopup(provider).then((userCred) => {
-    if (userCred.additionalUserInfo.isNewUser) {
+    if (userCred.additionalUserInfo?.isNewUser) {
       flagNewUser = true
       return new Promise((res, rej) => {
         setTimeout(async () => {
           try {
-            await userCred.user.getIdTokenResult(true)
+            await userCred.user?.getIdTokenResult(true)
             res()
           } catch (e) {
             unsub()
@@ -46,7 +46,7 @@ const AuthContext = createContext<{
 }>({})
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<{
-    user?: firebase.User
+    user?: firebase.User | null
     tokenResult?: firebase.auth.IdTokenResult
   }>({})
   useEffect(() => {

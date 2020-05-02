@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { signInWithPopup } from 'data/firebase'
+import { signInWithPopup } from 'client/firebase'
 function Login(props) {
   const [loading, setLoading] = useState(false)
   function handleClick() {

@@ -2,13 +2,13 @@ import { useEffect, useRef } from 'react'
 import styles from 'styles/loading.module.css'
 
 function Loading() {
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null)
   const mounted = useRef(false)
   useEffect(() => {
     mounted.current = true
     const id = setTimeout(() => {
       if (mounted.current) {
-        ref.current.removeAttribute('hidden')
+        ref.current?.removeAttribute('hidden')
       }
     }, 500)
     return () => {

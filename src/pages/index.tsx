@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
-import { format } from 'utils'
-import { useAuth } from 'data/firebase'
+import { format } from 'client'
+import { useAuth } from 'client/firebase'
 import Loading from 'components/loading'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 

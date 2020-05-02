@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
-import { useAuth } from 'data/firebase'
+import { useAuth } from 'client/firebase'
 
 async function fetchProperty(key, propertyId: string, token: string) {
   const resultPromise = fetch(`/api/properties/${propertyId}`, {

@@ -1,21 +1,8 @@
 import Link from 'next/link'
-import { useQuery } from 'react-query'
-import { useAuth } from 'data/firebase'
-
-async function fetchProperties(key, token) {
-  const result = await fetch('/api/properties', {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  const json = await result.json()
-  return json.data
-}
+import { useProperties, useSelectedProperty } from 'client/data'
 
 function Properties() {
-  const { tokenResult } = useAuth()
-  const { data } = useQuery<any[], [string, string]>(
-    ['properties', tokenResult!.token],
-    fetchProperties
-  )
+  const { data } = useProperties()
   return (
     <div>
       <h1>Properties</h1>

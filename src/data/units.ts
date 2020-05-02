@@ -1,37 +1,7 @@
 import { sql } from '@databases/pg'
 import db from './db'
 
-export async function list(propertyId?: number) {
-  if (!propertyId) {
-    try {
-      const data = await Units.list()
-      return { data }
-    } catch (e) {
-      return { error: e.message }
-    }
-  } else {
-    try {
-      const data = await Units.listForProperty({ propertyId })
-      return { data }
-    } catch (e) {
-      return { error: e.message }
-    }
-  }
-}
-
-export async function byId(id: number) {
-  if (!id) {
-    return { error: 'Missing required param: id' }
-  }
-  try {
-    const data = await Units.byId({ id })
-    return { data }
-  } catch (e) {
-    return { error: e.message }
-  }
-}
-
-const Units = {
+export default {
   list({ limit = 10, orderBy = 'name' } = {}) {
     const _orderBy = sql.ident(orderBy)
     return db.query(

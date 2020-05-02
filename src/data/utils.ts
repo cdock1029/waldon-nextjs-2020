@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import * as admin from 'firebase-admin'
 
 const credential = JSON.parse(
-  Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString()
+  Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS!, 'base64').toString()
 )
 
 if (!admin.apps.length) {
@@ -32,10 +32,13 @@ export async function verifyToken(
   return false
 }
 
-export function cache(res: NextApiResponse): NextApiResponse {
+export function cache(
+  res: NextApiResponse,
+  { maxAge = 1 }: { maxAge?: number } = {}
+): NextApiResponse {
   res.setHeader(
     'Cache-Control',
-    'private, max-age=1, stale-while-revalidate=3600'
+    `private, max-age=${maxAge}, stale-while-revalidate=3600`
   )
   return res
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { useAuth, auth } from 'data/firebase'
+import { useAuth, auth } from 'client/firebase'
 import Login from './login'
+import PropertySelect from './property-select'
 
 export default function Nav() {
   const { user } = useAuth()
@@ -17,26 +18,19 @@ export default function Nav() {
                 Home
               </a>
             </Link>
-            <Link href="/properties">
+            <Link href="/units">
+              <a className="mr-8 p-2 font-bold text-purple-800 no-underline">
+                Units
+              </a>
+            </Link>
+            {/* <Link href="/properties">
               <a className="p-2 font-bold text-purple-800 no-underline">
                 Properties
               </a>
-            </Link>
+            </Link> */}
 
             <div className="ml-auto flex items-center">
-              <label
-                className="text-sm text-gray-600 font-semibold"
-                htmlFor="properties-select flex items-center"
-              >
-                Property
-                <select
-                  className="ml-4"
-                  name="properties"
-                  id="properties-select"
-                >
-                  <option value="1">Columbiana Manor</option>
-                </select>
-              </label>
+              <PropertySelect />
               <button className="ml-8" onClick={logOut}>
                 Log out
               </button>
