@@ -13,6 +13,7 @@ module.exports = {
               defaultExtractor: (content) =>
                 content.match(/[\w-/:]+(?<!:)/g) || [],
               whitelistPatterns: [/data-reach/],
+              whitelistPatternsChildren: [/data-reach/],
             },
           ],
         ]

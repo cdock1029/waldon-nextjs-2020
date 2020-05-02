@@ -1,5 +1,5 @@
-/* purgecss start ignore */
-/* @tailwind base;*/
+/*! purgecss start ignore */
+@import '~@reach/menu-button/styles.css';
 
 @tailwind components;
 
@@ -20,5 +20,5 @@ button {
   @apply cursor-pointer shadow;
 }
 
-/* purgecss end ignore */
+/*! purgecss end ignore */
 @tailwind utilities;

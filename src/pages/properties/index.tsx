@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
 import { useAuth } from 'data/firebase'
-import { Loading } from 'components'
 
 async function fetchProperties(key, token) {
   const result = await fetch('/api/properties', {
