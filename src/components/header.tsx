@@ -9,17 +9,17 @@ export default function Nav() {
     auth.signOut()
   }
   return (
-    <header className="fixed inset-x-0 top-0 h-14 flex items-center bg-teal-100 px-8">
+    <header className="fixed inset-x-0 top-0 h-15 flex items-center bg-gray-900 px-8">
       <nav className="flex-1 flex text-lg items-center max-w-screen-xl mx-auto">
         {user ? (
           <>
             <Link href="/">
-              <a className="mr-8 -ml-2 p-2 font-bold text-purple-800 no-underline">
+              <a className="mr-8 -ml-2 p-2 text-teal-400 font-bold text-teal-100 no-underline">
                 Home
               </a>
             </Link>
             <Link href="/units">
-              <a className="mr-8 p-2 font-bold text-purple-800 no-underline">
+              <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
                 Units
               </a>
             </Link>

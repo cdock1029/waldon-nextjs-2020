@@ -7,15 +7,31 @@ html {
   box-sizing: inherit;
 }
 body {
-  @apply m-0 font-sans bg-gray-300 overflow-hidden;
+  @apply m-0 font-sans bg-gray-800 text-teal-200 overflow-hidden;
+}
+a {
+  @apply text-teal-300;
+}
+a:visited {
+  @apply text-teal-400;
+}
+button {
+  @apply cursor-pointer shadow-md py-1 px-2 bg-gray-700 text-teal-200 border-solid border-gray-900 border-opacity-50 rounded-sm;
+  border-width: 1px;
+}
+button:hover {
+  @apply bg-gray-800 shadow-lg;
+}
+button:active {
+  @apply bg-gray-900 shadow-lg;
 }
 
 @import '~@reach/menu-button/styles.css';
+[data-reach-menu-list],
+[data-reach-menu-items] {
+  @apply bg-gray-900;
+}
 
 @tailwind components;
-
-button {
-  @apply cursor-pointer shadow;
-}
 
 @tailwind utilities;

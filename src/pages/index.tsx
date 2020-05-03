@@ -26,9 +26,9 @@ export default function Index() {
       {status === 'loading' && <Loading />}
       <h2 className="py-8 text-3xl">Active leases</h2>
       {data && (
-        <div className="shadow rounded bg-gray-100">
+        <div className="shadow-md rounded bg-gray-700">
           <table className="table-auto text-sm w-full border-collapse">
-            <thead className="text-gray-600 uppercase">
+            <thead className="opacity-50 uppercase">
               <tr>
                 <th></th>
                 <th align="right">Unit</th>
@@ -42,9 +42,11 @@ export default function Index() {
             </thead>
             <tbody className="font-mono">
               {data.map((lease) => (
-                <tr key={lease.id} className="odd:bg-gray-200 even:bg-white">
+                <tr key={lease.id} className="odd:bg-gray-600 even:bg-white">
                   <td align="center">
-                    <button className="shadow text-gray-600">&#9660;</button>
+                    <button tabIndex={-1} className="shadow">
+                      &#9660;
+                    </button>
                   </td>
                   <td align="right">{lease.unit}</td>
                   <td className="tenant" title={lease.tenant}>
@@ -85,18 +87,21 @@ export default function Index() {
               {/*<tr className="last:rounded-b-sm odd:bg-gray-200 even:bg-gray-100">*/}
               <tr>
                 <td align="center">
-                  <button>X</button>
+                  <button tabIndex={-1} className="shadow">
+                    &#9660;
+                  </button>
                 </td>
+
                 <td align="right">31-102</td>
                 <td>Daffy Duck</td>
                 <td align="right">{format('2019-04-01')}</td>
                 <td align="right">{format('2020-04-01')}</td>
                 <td align="right">$700.00</td>
-                <td align="right" className="text-red-900">
+                <td align="right" className="text-red-200">
                   $30.00
                 </td>
                 <td align="center">
-                  <button>***</button>
+                  <ActionsMenu rent={'$700.00'} balance={'$30.00'} />
                 </td>
               </tr>
             </tbody>
@@ -132,12 +137,12 @@ function ActionsMenu({ rent, balance }) {
         Actions <span aria-hidden>▾</span>
       </MenuButton>
       <MenuList>
+        <MenuItem onSelect={() => alert('Pay rent')}>Pay {rent}</MenuItem>
         {balance !== '$0.00' && (
           <MenuItem onSelect={() => alert('Pay balance')}>
             Pay {balance}
           </MenuItem>
         )}
-        <MenuItem onSelect={() => alert('Pay rent')}>Pay {rent}</MenuItem>
         <MenuItem onSelect={() => alert('Pay custom')}>Pay custom...</MenuItem>
         <MenuItem onSelect={() => alert('Pay custom')}>Add charge...</MenuItem>
       </MenuList>
