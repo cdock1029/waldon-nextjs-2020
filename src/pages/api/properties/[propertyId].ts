@@ -10,7 +10,7 @@ export default async function property(
   } = req
 
   if (await verifyToken(req, res)) {
-    cache(res, { maxAge: 60 })
+    cache(res)
       .status(200)
       .json({
         data: await Properties.byId({ id: parseInt(propertyId as string) }),

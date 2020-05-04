@@ -7,7 +7,7 @@ export default async function units(req: NextApiRequest, res: NextApiResponse) {
   } = req
 
   if (await verifyToken(req, res)) {
-    cache(res, { maxAge: 60 })
+    cache(res)
       .status(200)
       .json({
         data: await Units.listForProperty({

@@ -48,11 +48,11 @@ export async function revokeSession(sessionCookie: string) {
 
 export function cache(
   res: NextApiResponse,
-  { maxAge = 1 }: { maxAge?: number } = {}
+  { maxAge = 60 }: { maxAge?: number } = {}
 ): NextApiResponse {
   res.setHeader(
     'Cache-Control',
-    `private, max-age=${1}, stale-while-revalidate=3600`
+    `private, max-age=${maxAge}, stale-while-revalidate=3600`
   )
   return res
 }

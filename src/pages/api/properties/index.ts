@@ -6,7 +6,7 @@ export default async function properties(
   res: NextApiResponse
 ) {
   if (await verifyToken(req, res)) {
-    cache(res, { maxAge: 60 })
+    cache(res)
       .status(200)
       .json({ data: await Properties.list() })
   }

@@ -7,7 +7,7 @@ export default async function unit(req: NextApiRequest, res: NextApiResponse) {
   } = req
 
   if (await verifyToken(req, res)) {
-    cache(res, { maxAge: 60 })
+    cache(res)
       .status(200)
       .json({
         data: await Units.byId({ id: parseInt(unitId as string) }),
