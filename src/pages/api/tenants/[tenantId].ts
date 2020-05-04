@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { tenantById, cache, verifyToken } from 'data'
+import { tenantById, cache, verifyToken } from 'server'
 
 export default async function tenant(
   req: NextApiRequest,

@@ -16,19 +16,6 @@ export async function verifyToken(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<Boolean> {
-  // if (req.headers && req.headers.authorization) {
-  //   const parts = req.headers.authorization.split(' ')
-  //   if (parts.length === 2 && parts[0] === 'Bearer') {
-  //     const token = parts[1]
-  //     try {
-  //       const result = await admin.auth().verifyIdToken(token)
-  //       return true
-  //     } catch (e) {
-  //       console.log('*** ERROR *** ', e.message)
-  //     }
-  //   }
-  // }
-
   const sessionCookie = req.cookies.session || ''
   // Verify the session cookie. In this case an additional check is added to detect
   // if the user's Firebase session was revoked, user deleted/disabled, etc.

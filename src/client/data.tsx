@@ -3,10 +3,9 @@ import Router from 'next/router'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
 import { useQuery } from 'react-query'
-import { useAuth } from './firebase'
 
-async function fetchProperties(key, token) {
-  const result = await fetch('/api/properties', { credentials: 'same-origin' })
+async function fetchProperties() {
+  const result = await fetch('/api/properties')
   const json = await result.json()
   if (json.redirect) {
     Router.replace(json.redirect)
@@ -15,11 +14,7 @@ async function fetchProperties(key, token) {
 }
 
 export function useProperties() {
-  const { tokenResult } = useAuth()
-  return useQuery<Property[], [string, string]>(
-    ['properties', tokenResult!.token],
-    fetchProperties
-  )
+  return useQuery<Property[], string>('properties', fetchProperties)
 }
 
 type PropertyContext = {

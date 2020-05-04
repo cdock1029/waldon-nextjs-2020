@@ -19,9 +19,12 @@ export default function Login() {
     Router.replace('/')
   }
   return (
-    <div className="max-w-md w-full mx-auto rounded shadow-md bg-gray-700 p-8">
-      <h1>Sign in</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-md w-full mx-auto pt-8">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded shadow-md bg-gray-700 p-8"
+      >
+        <h1>Sign in</h1>
         <label htmlFor="email" className="flex flex-col py-4">
           <div className="pb-2">Email</div>
           <input

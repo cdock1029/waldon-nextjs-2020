@@ -1,21 +1,11 @@
 import Link from 'next/link'
 import Router from 'next/router'
-import { useAuth } from 'client/firebase'
-import Login from './login'
 import PropertySelect from './property-select'
 
 export default function Nav() {
-  const { user } = useAuth()
   async function logOut() {
     try {
-      await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
-      const cache = await caches.open('v1')
-      const response = await cache.matchAll('/api/')
-      const deleteOps: Promise<boolean>[] = []
-      for (let element of response) {
-        deleteOps.push(cache.delete(element as any))
-      }
-      await Promise.all(deleteOps)
+      await fetch('/api/logout', { method: 'POST' })
     } catch (e) {
       console.log('Error', e)
     } finally {
@@ -26,34 +16,23 @@ export default function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 h-15 flex items-center bg-gray-900 px-8">
       <nav className="flex-1 flex text-lg items-center max-w-screen-xl mx-auto">
-        {user ? (
-          <>
-            <Link href="/">
-              <a className="mr-8 -ml-2 p-2 text-teal-400 font-bold text-teal-100 no-underline">
-                Home
-              </a>
-            </Link>
-            <Link href="/units">
-              <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
-                Units
-              </a>
-            </Link>
-            {/* <Link href="/properties">
-              <a className="p-2 font-bold text-purple-800 no-underline">
-                Properties
-              </a>
-            </Link> */}
+        <Link href="/">
+          <a className="mr-8 -ml-2 p-2 text-teal-400 font-bold text-teal-100 no-underline">
+            Home
+          </a>
+        </Link>
+        <Link href="/units">
+          <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
+            Units
+          </a>
+        </Link>
 
-            <div className="ml-auto flex items-center">
-              <PropertySelect />
-              <button className="ml-8" onClick={logOut}>
-                Log out
-              </button>
-            </div>
-          </>
-        ) : (
-          <Login className="ml-auto" />
-        )}
+        <div className="ml-auto flex items-center">
+          <PropertySelect />
+          <button className="ml-8" onClick={logOut}>
+            Log out
+          </button>
+        </div>
       </nav>
 
       <style jsx>{`

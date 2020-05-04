@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Dashboard, cache, verifyToken } from 'data'
+import { Dashboard, cache, verifyToken } from 'server'
 
 export default async function dashboard(
   req: NextApiRequest,

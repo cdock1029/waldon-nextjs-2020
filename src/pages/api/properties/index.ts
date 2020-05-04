@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Properties, cache, verifyToken } from 'data'
+import { Properties, cache, verifyToken } from 'server'
 
 export default async function properties(
   req: NextApiRequest,

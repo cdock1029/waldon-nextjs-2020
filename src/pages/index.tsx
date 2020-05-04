@@ -1,14 +1,11 @@
 import Router from 'next/router'
 import { useQuery } from 'react-query'
 import { format } from 'client'
-import { useAuth } from 'client/firebase'
 import { Loading, Layout } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
-async function fetchData(key, token: string) {
-  const result = await fetch('/api/dashboard', {
-    credentials: 'same-origin',
-  }).then((res) => res.json())
+async function fetchData() {
+  const result = await fetch('/api/dashboard').then((res) => res.json())
   if (result.redirect) {
     Router.replace(result.redirect)
   }
@@ -16,9 +13,8 @@ async function fetchData(key, token: string) {
 }
 
 export default function Index() {
-  const { tokenResult } = useAuth()
-  const { data, status, error } = useQuery<any[], [string, string]>(
-    ['dashboard', tokenResult!.token],
+  const { data, status, error } = useQuery<any[], string>(
+    'dashboard',
     fetchData
   )
 

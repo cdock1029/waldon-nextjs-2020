@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { serialize } from 'cookie'
-import { revokeSession } from 'data/utils'
+import { revokeSession } from 'server/utils'
 
 export default async function logout(
   req: NextApiRequest,

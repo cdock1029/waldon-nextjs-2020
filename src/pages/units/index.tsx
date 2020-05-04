@@ -1,18 +1,13 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
-import { useAuth } from 'client/firebase'
 import { useSelectedProperty } from 'client/data'
 import Router from 'next/router'
 import { Layout } from 'components'
 
-async function fetchUnits(
-  key,
-  propertyId: number,
-  token: string
-): Promise<Unit[]> {
-  const json = await fetch(`/api/units?propertyId=${propertyId}`, {
-    credentials: 'same-origin',
-  }).then((res) => res.json())
+async function fetchUnits(key, propertyId: number): Promise<Unit[]> {
+  const json = await fetch(`/api/units?propertyId=${propertyId}`).then((res) =>
+    res.json()
+  )
   if (json.redirect) {
     Router.replace(json.redirect)
   }
@@ -21,10 +16,9 @@ async function fetchUnits(
 }
 
 function Units() {
-  const { tokenResult } = useAuth()
   const { property } = useSelectedProperty()
   const { data: units } = useQuery(
-    property && ['units', property.id, tokenResult!.token],
+    property && ['units', property.id],
     fetchUnits
   )
   return (
