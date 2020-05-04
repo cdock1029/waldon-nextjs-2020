@@ -14,6 +14,7 @@
   "dependencies": {
     "@databases/pg": "^2.1.1",
     "@reach/menu-button": "^0.10.1",
+    "cookie": "^0.4.1",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.11.0",
     "immer": "^6.0.3",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@tailwindcss/ui": "^0.3.0",
+    "@types/cookie": "^0.3.3",
     "@types/react": "^16.9.34",
     "patch-package": "^6.2.2",
     "postcss-preset-env": "^6.7.0",

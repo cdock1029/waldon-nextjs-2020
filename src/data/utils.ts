@@ -16,20 +16,47 @@ export async function verifyToken(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<Boolean> {
-  if (req.headers && req.headers.authorization) {
-    const parts = req.headers.authorization.split(' ')
-    if (parts.length === 2 && parts[0] === 'Bearer') {
-      const token = parts[1]
-      try {
-        const result = await admin.auth().verifyIdToken(token)
-        return true
-      } catch (e) {
-        console.log('*** ERROR *** ', e.message)
-      }
-    }
+  // if (req.headers && req.headers.authorization) {
+  //   const parts = req.headers.authorization.split(' ')
+  //   if (parts.length === 2 && parts[0] === 'Bearer') {
+  //     const token = parts[1]
+  //     try {
+  //       const result = await admin.auth().verifyIdToken(token)
+  //       return true
+  //     } catch (e) {
+  //       console.log('*** ERROR *** ', e.message)
+  //     }
+  //   }
+  // }
+
+  const sessionCookie = req.cookies.session || ''
+  // Verify the session cookie. In this case an additional check is added to detect
+  // if the user's Firebase session was revoked, user deleted/disabled, etc.
+  try {
+    const decodedClaims = await admin
+      .auth()
+      .verifySessionCookie(sessionCookie, true /** checkRevoked */)
+    return true
+  } catch (e) {
+    console.log('cookie not verified')
+    res.json({ redirect: '/login' })
+    return false
   }
-  res.status(401).json({ error: 'Not authorized' })
-  return false
+}
+
+export function createSessionCookie(
+  idToken: string,
+  sessionCookieOptions: admin.auth.SessionCookieOptions
+) {
+  return admin.auth().createSessionCookie(idToken, sessionCookieOptions)
+}
+export async function revokeSession(sessionCookie: string) {
+  try {
+    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie)
+    await admin.auth().revokeRefreshTokens(decodedClaims.uid)
+  } catch (e) {
+    console.log(e.message)
+  }
 }
 
 export function cache(

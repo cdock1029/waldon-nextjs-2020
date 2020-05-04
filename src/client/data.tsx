@@ -1,14 +1,16 @@
 import { createContext, ReactNode, useContext } from 'react'
+import Router from 'next/router'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
 import { useQuery } from 'react-query'
 import { useAuth } from './firebase'
 
 async function fetchProperties(key, token) {
-  const result = await fetch('/api/properties', {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+  const result = await fetch('/api/properties', { credentials: 'same-origin' })
   const json = await result.json()
+  if (json.redirect) {
+    Router.replace(json.redirect)
+  }
   return json.data
 }
 

@@ -1,13 +1,28 @@
 import Link from 'next/link'
-import { useAuth, auth } from 'client/firebase'
+import Router from 'next/router'
+import { useAuth } from 'client/firebase'
 import Login from './login'
 import PropertySelect from './property-select'
 
 export default function Nav() {
   const { user } = useAuth()
-  function logOut() {
-    auth.signOut()
+  async function logOut() {
+    try {
+      await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
+      const cache = await caches.open('v1')
+      const response = await cache.matchAll('/api/')
+      const deleteOps: Promise<boolean>[] = []
+      for (let element of response) {
+        deleteOps.push(cache.delete(element as any))
+      }
+      await Promise.all(deleteOps)
+    } catch (e) {
+      console.log('Error', e)
+    } finally {
+      Router.replace('/login')
+    }
   }
+
   return (
     <header className="fixed inset-x-0 top-0 h-15 flex items-center bg-gray-900 px-8">
       <nav className="flex-1 flex text-lg items-center max-w-screen-xl mx-auto">

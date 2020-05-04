@@ -1,13 +1,17 @@
+import Router from 'next/router'
 import { useQuery } from 'react-query'
 import { format } from 'client'
 import { useAuth } from 'client/firebase'
-import Loading from 'components/loading'
+import { Loading, Layout } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, token: string) {
   const result = await fetch('/api/dashboard', {
-    headers: { authorization: `Bearer ${token}` },
+    credentials: 'same-origin',
   }).then((res) => res.json())
+  if (result.redirect) {
+    Router.replace(result.redirect)
+  }
   return result.data
 }
 
@@ -22,7 +26,7 @@ export default function Index() {
     return <h1>{(error as any).message}</h1>
   }
   return (
-    <div>
+    <Layout>
       {status === 'loading' && <Loading />}
       <h2 className="py-8 text-3xl">Active leases</h2>
       {data && (
@@ -126,7 +130,7 @@ export default function Index() {
           overflow: hidden;
         }
       `}</style>
-    </div>
+    </Layout>
   )
 }
 

@@ -5,13 +5,13 @@ import { PropertyProvider } from 'client/data'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
-      <PropertyProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </PropertyProvider>
-    </AuthProvider>
+    // <AuthProvider>
+    <PropertyProvider>
+      {/* <Layout> */}
+      <Component {...pageProps} />
+      {/* </Layout> */}
+    </PropertyProvider>
+    // </AuthProvider>
   )
 }
 

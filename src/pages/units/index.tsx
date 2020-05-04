@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { useQuery } from 'react-query'
 import { useAuth } from 'client/firebase'
 import { useSelectedProperty } from 'client/data'
+import Router from 'next/router'
+import { Layout } from 'components'
 
 async function fetchUnits(
   key,
@@ -9,8 +11,11 @@ async function fetchUnits(
   token: string
 ): Promise<Unit[]> {
   const json = await fetch(`/api/units?propertyId=${propertyId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    credentials: 'same-origin',
   }).then((res) => res.json())
+  if (json.redirect) {
+    Router.replace(json.redirect)
+  }
 
   return json.data
 }
@@ -23,7 +28,7 @@ function Units() {
     fetchUnits
   )
   return (
-    <div>
+    <Layout>
       <h1 className="flex items-start">
         Property: {property && property.name}
       </h1>
@@ -38,7 +43,7 @@ function Units() {
             </li>
           ))}
       </ul>
-    </div>
+    </Layout>
   )
 }
 

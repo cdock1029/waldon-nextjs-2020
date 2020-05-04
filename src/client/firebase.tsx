@@ -16,6 +16,7 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig)
 }
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE)
 
 const provider = new firebase.auth.GoogleAuthProvider()
 
@@ -76,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext)
+  return { user: {}, tokenResult: { token: '' } } //useContext(AuthContext)
 }
 
 export const auth = firebase.auth()
