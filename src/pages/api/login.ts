@@ -6,8 +6,6 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const token = req.body.token
 
-    console.log('server token:', token)
-
     // Set session expiration to 5 days.
     const expiresIn = 60 * 60 * 24 * 5 * 1000
     // Create the session cookie. This will also verify the ID token in the process.
@@ -21,7 +19,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
         maxAge: expiresIn,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        path: '/',
+        path: '/api/',
         sameSite: 'strict',
       })
       res.setHeader('Set-Cookie', cookie)
@@ -30,7 +28,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).send('UNAUTHORIZED REQUEST!')
     }
   } else {
-    res.setHeader('Allow', 'POST, OPTIONS')
+    res.setHeader('Allow', 'POST')
     res.status(405).end('Method Not Allowed')
   }
 }

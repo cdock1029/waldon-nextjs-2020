@@ -52,7 +52,7 @@ export function cache(
 ): NextApiResponse {
   res.setHeader(
     'Cache-Control',
-    `private, max-age=${maxAge}, stale-while-revalidate=3600`
+    `private, max-age=${1}, stale-while-revalidate=3600`
   )
   return res
 }

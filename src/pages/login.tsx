@@ -1,22 +1,35 @@
+import { useState } from 'react'
 import Router from 'next/router'
 import { auth } from 'client/firebase'
 export default function Login() {
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const target = e.target
+    if (!busy) {
+      setBusy(true)
+      const target = e.target
 
-    const email = target['email'].value
-    const password = target['password'].value
+      const email = target['email'].value
+      const password = target['password'].value
 
-    const cred = await auth.signInWithEmailAndPassword(email, password)
-    const token = await cred.user?.getIdToken()
+      try {
+        const cred = await auth.signInWithEmailAndPassword(email, password)
+        const token = await cred.user?.getIdToken()
 
-    await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-    })
-    Router.replace('/')
+        await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        })
+        Router.replace('/')
+      } catch (e) {
+        setError(e.message)
+      } finally {
+        setBusy(false)
+      }
+    }
   }
   return (
     <div className="max-w-md w-full mx-auto pt-8">
@@ -47,8 +60,13 @@ export default function Login() {
             className="text-lg p-1"
           />
         </label>
-        <div className="py-4 flex justify-between">
-          <button className="text-lg">Sign in </button>
+        <div className="py-4 flex justify-end">
+          <button disabled={busy} className="text-lg">
+            Sign in{' '}
+          </button>
+        </div>
+        <div>
+          <p className="text-lg font-semibold text-red-300">{error}</p>
         </div>
       </form>
     </div>
