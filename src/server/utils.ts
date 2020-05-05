@@ -50,9 +50,6 @@ export function cache(
   res: NextApiResponse,
   { maxAge = 60 }: { maxAge?: number } = {}
 ): NextApiResponse {
-  res.setHeader(
-    'Cache-Control',
-    `private, max-age=${maxAge}, stale-while-revalidate=3600`
-  )
+  res.setHeader('Cache-Control', `private, s-maxage=0`)
   return res
 }
