@@ -10,12 +10,12 @@ async function fetchUnit(key, unitId: string): Promise<Unit> {
   return json.data
 }
 
-function Unit() {
+function Unit(props) {
   const {
     query: { unitId },
   } = useRouter()
-  const { data: unit } = useQuery<Unit, [string, string]>(
-    ['units', unitId as string],
+  const { data: unit } = useQuery(
+    unitId ? ['units', unitId as string] : undefined,
     fetchUnit
   )
   return (
