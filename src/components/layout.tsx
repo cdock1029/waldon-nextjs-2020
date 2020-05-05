@@ -1,6 +1,6 @@
 import Header from './header'
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen max-h-full flex flex-col overflow-y-auto px-8 pt-15">
       <Header />

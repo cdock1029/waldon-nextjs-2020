@@ -1,6 +1,6 @@
 import Router from 'next/router'
 import { useQuery } from 'react-query'
-import { format } from 'client'
+import { format, useSelectedProperty } from 'client'
 import { Loading, Layout } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
@@ -13,6 +13,7 @@ async function fetchData() {
 }
 
 export default function Index() {
+  const { property } = useSelectedProperty()
   const { data, status, error } = useQuery<any[], string>(
     'dashboard',
     fetchData
@@ -24,7 +25,14 @@ export default function Index() {
   return (
     <Layout>
       {status === 'loading' && <Loading />}
-      <h2 className="py-8 text-3xl">Active leases</h2>
+      <div className="py-8">
+        <h2 className="text-3xl m-0">
+          {property ? property.name : <span>&nbsp;</span>}
+        </h2>
+        <small className="opacity-75 font-semibold uppercase">
+          Active leases
+        </small>
+      </div>
       {data && (
         <div className="shadow-md rounded bg-gray-700">
           <table className="table-auto text-sm w-full border-collapse">

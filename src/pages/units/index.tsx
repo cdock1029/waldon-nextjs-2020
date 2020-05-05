@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
-import { useSelectedProperty } from 'client/data'
+import { useSelectedProperty } from 'client'
 import Router from 'next/router'
 import { Layout } from 'components'
 

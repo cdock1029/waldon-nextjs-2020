@@ -28,11 +28,19 @@ button:active {
 button:disabled {
   @apply opacity-50 cursor-not-allowed;
 }
+input {
+  @apply text-lg p-1;
+}
 
 @import '~@reach/menu-button/styles.css';
 [data-reach-menu-list],
 [data-reach-menu-items] {
   @apply bg-gray-900;
+}
+
+@import '~@reach/dialog/styles.css';
+[data-reach-dialog-content] {
+  @apply bg-gray-600;
 }
 
 @tailwind components;

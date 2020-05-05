@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@databases/pg": "^2.1.1",
+    "@reach/alert-dialog": "^0.10.1",
     "@reach/menu-button": "^0.10.1",
     "cookie": "^0.4.1",
     "firebase": "^7.14.2",

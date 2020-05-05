@@ -26,6 +26,11 @@ export default function Nav() {
             Units
           </a>
         </Link>
+        <Link href="/tenants">
+          <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
+            Tenants
+          </a>
+        </Link>
 
         <div className="ml-auto flex items-center">
           <PropertySelect />

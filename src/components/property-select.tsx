@@ -1,4 +1,4 @@
-import { useProperties, useSelectedProperty } from 'client/data'
+import { useProperties, useSelectedProperty } from 'client'
 
 function PropertySelect() {
   const { property, updateProperty } = useSelectedProperty()

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import styles from 'styles/loading.module.css'
 
-function Loading() {
+export function Loading() {
   const ref = useRef<HTMLDivElement>(null)
   const mounted = useRef(false)
   useEffect(() => {
@@ -32,5 +32,3 @@ function Loading() {
     </div>
   )
 }
-
-export default Loading

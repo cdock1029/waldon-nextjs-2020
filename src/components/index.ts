@@ -1,2 +1,3 @@
-export { default as Loading } from './loading'
-export { default as Layout } from './layout'
+export * from './loading'
+export * from './layout'
+export * from './new-tenant'

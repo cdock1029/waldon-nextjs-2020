@@ -1,5 +1,5 @@
 import 'styles/index.css'
-import { PropertyProvider } from 'client/data'
+import { PropertyProvider } from 'client'
 
 function MyApp({ Component, pageProps }) {
   return (
