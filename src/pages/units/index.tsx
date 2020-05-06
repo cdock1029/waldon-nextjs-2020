@@ -23,8 +23,8 @@ function Units() {
   )
   return (
     <Layout>
-      <h1 className="flex items-start">
-        Property: {property && property.name}
+      <h1 className="flex items-start m-0 py-8 text-3xl">
+        Property: {property ? property.name : null}
       </h1>
 
       <ul>

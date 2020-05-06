@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+  useEffect,
+} from 'react'
 import Router from 'next/router'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
@@ -45,5 +51,12 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
 }
 
 export function useSelectedProperty() {
-  return useContext(PropertyContext)
+  const [postRenderState, setPostRenderState] = useState<PropertyContext>(
+    {} as any
+  )
+  const ctx = useContext(PropertyContext)
+  useEffect(() => {
+    setPostRenderState(ctx)
+  }, [ctx, setPostRenderState])
+  return postRenderState
 }

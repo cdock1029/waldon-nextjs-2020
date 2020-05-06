@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { tenantById, cache, verifyToken } from 'server'
+import { Tenants, cache, verifyToken } from 'server'
 
 export default async function tenant(
   req: NextApiRequest,
@@ -10,7 +10,8 @@ export default async function tenant(
   } = req
 
   if (await verifyToken(req, res)) {
-    const result = await tenantById(parseInt(tenantId as string))
-    cache(res).status(200).json(result)
+    cache(res)
+      .status(200)
+      .json({ data: await Tenants.byId({ id: parseInt(tenantId as string) }) })
   }
 }

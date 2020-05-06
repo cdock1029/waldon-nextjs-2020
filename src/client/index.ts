@@ -16,7 +16,7 @@ export function format(str: string) {
   return formatter.format(d)
 }
 
-type Result<T> = { data?: T; redirect?: boolean }
+type Result<T> = { data?: T; redirect?: boolean; error?: string }
 
 export async function fetchGuard<T>(requestInfo: RequestInfo) {
   const controller = new AbortController()
@@ -34,6 +34,9 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
       if (result.redirect) {
         await Router.replace('/login')
         return
+      }
+      if (result.error) {
+        throw new Error(result.error)
       }
       return result.data
     })

@@ -1,7 +1,6 @@
-export { default as Properties } from './properties'
-export { default as Units } from './units'
+export * from './properties'
+export * from './units'
 export * from './tenants'
+export * from './dashboard'
 
-export { default as Dashboard } from './dashboard'
-
-export { verifyToken, cache } from './utils'
+export * from './utils'

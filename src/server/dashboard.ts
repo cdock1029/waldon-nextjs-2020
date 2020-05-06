@@ -1,8 +1,27 @@
-import { sql } from '@databases/pg'
 import db from './db'
 
-export default {
-  leases({ limit = 50, offset = 0 } = {}) {
+export const Dashboard = {
+  async leases({ limit = 50, offset = 0 } = {}) {
+    return db<any>('leases')
+      .join('units', 'leases.unit_id', '=', 'units.id')
+      .join('lease_tenants', 'lease_tenants.lease_id', '=', 'leases.id')
+      .join('tenants', 'tenants.id', '=', 'lease_tenants.tenant_id')
+      .distinctOn('leases.unit_id')
+      .select(
+        'units.name as unit',
+        db.raw(
+          "string_agg(tenants.full_name, ',') over (partition by lease_tenants.lease_id) as tenant"
+        ),
+        'leases.*'
+      )
+      .orderBy([
+        'leases.unit_id',
+        { column: 'leases.start_date', order: 'desc' },
+      ])
+      .limit(limit)
+      .offset(offset)
+
+    /*
     return db.query(
       sql`select distinct on (l.unit_id)
       u.name unit,
@@ -14,6 +33,7 @@ export default {
       join tenants t on t.id=lt.tenant_id
       order by l.unit_id, l.start_date desc limit ${limit} offset ${offset};`
     )
+    */
   },
 
   transactionsByLeaseId({
@@ -25,8 +45,15 @@ export default {
     limit?: number
     offset?: number
   }) {
+    return db('transactions')
+      .select('*')
+      .where('lease_id', '=', leaseId)
+      .limit(limit)
+      .offset(offset)
+    /*
     return db.query(
       sql`select * from transactions where lease_id = ${leaseId} limit ${limit} offset ${offset};`
     )
+    */
   },
 }

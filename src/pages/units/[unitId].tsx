@@ -1,29 +1,21 @@
 import { useQuery } from 'react-query'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Layout } from 'components'
+import { fetchGuard } from 'client'
 
-async function fetchUnit(key, unitId: string): Promise<Unit> {
-  const json = await fetch(`/api/units/${unitId}`).then((res) => res.json())
-  if (json.redirect) {
-    Router.replace(json.redirect)
-  }
-  return json.data
+async function fetchUnit(key, unitId: string): Promise<Unit | undefined> {
+  return fetchGuard<Unit>(`/api/units/${unitId}`)
 }
 
-function Unit(props) {
+export default function Unit() {
   const {
     query: { unitId },
   } = useRouter()
-  const { data: unit } = useQuery(
-    unitId ? ['units', unitId as string] : undefined,
-    fetchUnit
-  )
+  const { data: unit } = useQuery(['units', unitId!.toString()], fetchUnit)
   return (
     <Layout>
-      <h1>Unit: {unit ? unit.name : ''}</h1>
+      <h1 className="m-0 py-8 text-3xl">Unit: {unit ? unit.name : ''}</h1>
       <p>todo</p>
     </Layout>
   )
 }
-
-export default Unit

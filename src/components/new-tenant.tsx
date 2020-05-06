@@ -5,7 +5,11 @@ import {
 } from '@reach/alert-dialog'
 import { useState, useRef } from 'react'
 
-export function NewTenant() {
+export function NewTenant({
+  refetchTenants,
+}: {
+  refetchTenants: () => Promise<any>
+}) {
   const [showDialog, setShowDialog] = useState(false)
   const cancelRef = useRef(null)
   const formRef = useRef<HTMLFormElement>(null)
@@ -48,6 +52,8 @@ export function NewTenant() {
     } else if (result.data) {
       console.log({ result: result.data })
     }
+
+    refetchTenants()
 
     close()
   }
