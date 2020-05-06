@@ -6,6 +6,7 @@ export default function Nav() {
   async function logOut() {
     try {
       await fetch('/api/polka/auth/logout', { method: 'POST' })
+      document.cookie = 'wpmauth=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
     } catch (e) {
       console.log('Error', e)
     } finally {
