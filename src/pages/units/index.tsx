@@ -23,20 +23,23 @@ function Units() {
   )
   return (
     <Layout>
-      <h1 className="flex items-start m-0 py-8 text-3xl">
-        Property: {property ? property.name : null}
-      </h1>
+      <div className="py-8">
+        <h1 className="text-3xl m-0">
+          {property ? property.name : <span>&nbsp;</span>}
+        </h1>
+        <small className="opacity-75 font-semibold uppercase">Property</small>
+      </div>
 
-      <ul>
+      <div>
         {units &&
           units.map((u) => (
-            <li key={u.id}>
+            <p key={u.id}>
               <Link key={u.id} href="/units/[unitId]" as={`/units/${u.id}`}>
                 <a className="underline font-semibold">{u.name}</a>
               </Link>
-            </li>
+            </p>
           ))}
-      </ul>
+      </div>
     </Layout>
   )
 }

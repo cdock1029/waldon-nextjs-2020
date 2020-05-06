@@ -2,6 +2,7 @@ import { Layout } from 'components'
 import { useQuery } from 'react-query'
 import { fetchGuard } from 'client'
 import { NewTenant } from 'components'
+import Link from 'next/link'
 
 async function fetchTenants() {
   return fetchGuard<Tenant[]>('/api/polka/routes/tenants')
@@ -17,7 +18,14 @@ export default function Tenants() {
         <NewTenant />
       </div>
       {status === 'loading' && <p>Loading...</p>}
-      {data && data.map((t) => <p key={t.id}>{t.full_name}</p>)}
+      {data &&
+        data.map((t) => (
+          <p key={t.id}>
+            <Link as={`/tenants/${t.id}`} href="/tenants/[tenantId]">
+              <a>{t.full_name}</a>
+            </Link>
+          </p>
+        ))}
     </Layout>
   )
 }

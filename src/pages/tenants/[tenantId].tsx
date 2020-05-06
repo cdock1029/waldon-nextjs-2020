@@ -18,9 +18,13 @@ export default function Tenant(props) {
 
   return (
     <Layout>
-      <div className="max-w-xl w-full mx-auto">
-        <h1>Tenant {tenant ? tenant.full_name : null}</h1>
+      <div className="py-8">
+        <h1 className="text-3xl m-0">
+          {tenant ? tenant.full_name : <span>&nbsp;</span>}
+        </h1>
+        <small className="opacity-75 font-semibold uppercase">Tenant</small>
       </div>
+      <div>Content</div>
     </Layout>
   )
 }

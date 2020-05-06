@@ -28,9 +28,9 @@ export default function Index() {
     <Layout>
       {status === 'loading' && <Loading />}
       <div className="py-8">
-        <h2 className="text-3xl m-0">
+        <h1 className="text-3xl m-0">
           {property ? property.name : <span>&nbsp;</span>}
-        </h2>
+        </h1>
         <small className="opacity-75 font-semibold uppercase">
           Active leases
         </small>

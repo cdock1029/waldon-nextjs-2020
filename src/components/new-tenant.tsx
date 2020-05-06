@@ -72,6 +72,7 @@ export function NewTenant() {
       <button onClick={open}>New tenant</button>
       {showDialog && (
         <AlertDialog
+          onDismiss={close}
           leastDestructiveRef={cancelRef}
           className="p-8 shadow-md rounded"
         >
