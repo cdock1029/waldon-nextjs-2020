@@ -41,7 +41,7 @@ export function NewTenant({
       }
     }
 
-    const result = await fetch('/api/tenants', {
+    const result = await fetch('/api/polka/routes/tenants', {
       method: 'POST',
       body: JSON.stringify({ tenant }),
       headers: { 'Content-Type': 'application/json' },

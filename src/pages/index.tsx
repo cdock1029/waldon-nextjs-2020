@@ -5,7 +5,9 @@ import { Loading, Layout } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData() {
-  const result = await fetch('/api/dashboard').then((res) => res.json())
+  const result = await fetch('/api/polka/routes/dashboard').then((res) =>
+    res.json()
+  )
   if (result.redirect) {
     Router.replace(result.redirect)
   }

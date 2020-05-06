@@ -1,4 +1,15 @@
-import db from './db'
+import polka from 'polka'
+import { db } from 'server'
+import type { NextApiResponse } from 'next'
+
+export const dashboardRoutes = polka().get('/', async function dashboard(
+  req,
+  res: NextApiResponse
+) {
+  res.status(200).json({
+    data: await Dashboard.leases(),
+  })
+})
 
 export const Dashboard = {
   async leases({ limit = 50, offset = 0 } = {}) {
@@ -20,20 +31,6 @@ export const Dashboard = {
       ])
       .limit(limit)
       .offset(offset)
-
-    /*
-    return db.query(
-      sql`select distinct on (l.unit_id)
-      u.name unit,
-      string_agg(t.full_name, ', ') over (partition by lt.lease_id) tenant
-      ,l.*
-      from leases l
-      join units u on u.id=l.unit_id
-      join lease_tenants lt on lt.lease_id=l.id
-      join tenants t on t.id=lt.tenant_id
-      order by l.unit_id, l.start_date desc limit ${limit} offset ${offset};`
-    )
-    */
   },
 
   transactionsByLeaseId({
@@ -50,10 +47,5 @@ export const Dashboard = {
       .where('lease_id', '=', leaseId)
       .limit(limit)
       .offset(offset)
-    /*
-    return db.query(
-      sql`select * from transactions where lease_id = ${leaseId} limit ${limit} offset ${offset};`
-    )
-    */
   },
 }

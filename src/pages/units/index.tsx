@@ -5,9 +5,9 @@ import Router from 'next/router'
 import { Layout } from 'components'
 
 async function fetchUnits(key, propertyId: number): Promise<Unit[]> {
-  const json = await fetch(`/api/units?propertyId=${propertyId}`).then((res) =>
-    res.json()
-  )
+  const json = await fetch(
+    `/api/polka/routes/units?propertyId=${propertyId}`
+  ).then((res) => res.json())
   if (json.redirect) {
     Router.replace(json.redirect)
   }

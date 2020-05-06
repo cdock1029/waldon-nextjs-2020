@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { fetchGuard } from 'client'
 
 function fetchTenant(key, tenantId: string): Promise<Tenant | undefined> {
-  return fetchGuard<Tenant>(`/api/tenants/${tenantId}`)
+  return fetchGuard<Tenant>(`/api/polka/routes/tenants/${tenantId}`)
 }
 
 export default function Tenant(props) {

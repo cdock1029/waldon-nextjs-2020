@@ -1,13 +1,26 @@
-import db from './db'
+import polka from 'polka'
+import { db } from 'server'
+import type { NextApiResponse } from 'next'
+
+console.log('unit routes parsed?')
+
+export const unitRoutes = polka()
+  .get('/', async function units(req, res: NextApiResponse) {
+    res.status(200).json({
+      data: await Units.listForProperty({
+        propertyId: parseInt(req.query.propertyId),
+      }),
+    })
+  })
+  .get('/:unitId', async function unit(req, res: NextApiResponse) {
+    res.status(200).json({
+      data: await Units.byId({ id: parseInt(req.params.unitId) }),
+    })
+  })
 
 export const Units = {
   async list({ limit = 10, orderBy = 'name' } = {}) {
     return db<Unit>('units').select('*').orderBy(orderBy).limit(limit)
-    /*
-    return db.query(
-      sql`select * from units order by ${_orderBy} limit ${limit};`
-    )
-    */
   },
 
   async listForProperty({
@@ -24,23 +37,9 @@ export const Units = {
       .where('property_id', '=', propertyId)
       .orderBy(orderBy)
       .limit(limit)
-
-    //const _orderBy = sql.ident(orderBy)
-    //const _propertyId = sql.value(propertyId)
-    /*
-    return db.query(
-      sql`select * from units where property_id=${_propertyId} order by ${_orderBy} limit ${limit};`
-    )
-    */
   },
 
   async byId({ id }: { id: number }) {
     return db<Unit>('units').first('*').where('id', '=', id)
-    /*
-    const result = await db.query(
-      sql`select * from units where id=${id} limit 1;`
-    )
-    return result.length ? result[0] : null
-    */
   },
 }

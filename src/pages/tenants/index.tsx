@@ -4,7 +4,7 @@ import { fetchGuard } from 'client'
 import { NewTenant } from 'components'
 
 async function fetchTenants() {
-  return fetchGuard<Tenant[]>('/api/tenants')
+  return fetchGuard<Tenant[]>('/api/polka/routes/tenants')
 }
 
 export default function Tenants() {

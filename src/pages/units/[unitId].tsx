@@ -7,7 +7,7 @@ async function fetchUnit(
   key,
   unitId: string | string[]
 ): Promise<Unit | undefined> {
-  return fetchGuard<Unit>(`/api/units/${unitId}`)
+  return fetchGuard<Unit>(`/api/polka/routes/units/${unitId}`)
 }
 
 export default function Unit() {

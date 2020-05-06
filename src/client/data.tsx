@@ -11,7 +11,7 @@ import { useLocalStorage } from 'react-use'
 import { useQuery } from 'react-query'
 
 async function fetchProperties() {
-  const result = await fetch('/api/properties')
+  const result = await fetch('/api/polka/routes/properties')
   const json = await result.json()
   if (json.redirect) {
     Router.replace(json.redirect)

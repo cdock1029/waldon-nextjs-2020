@@ -26,7 +26,7 @@ export async function verifyToken(
     return true
   } catch (e) {
     console.log('cookie not verified')
-    res.json({ redirect: '/login' })
+    res.status(401).json({ redirect: '/login' })
     return false
   }
 }
