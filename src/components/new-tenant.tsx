@@ -4,17 +4,24 @@ import {
   AlertDialogLabel,
 } from '@reach/alert-dialog'
 import { useState, useRef } from 'react'
+import { useMutation, queryCache } from 'react-query'
 
-export function NewTenant({
-  refetchTenants,
-}: {
-  refetchTenants: () => Promise<any>
-}) {
+function saveTenantRequest(tenant: Tenant) {
+  return fetch('/api/polka/routes/tenants', {
+    method: 'POST',
+    body: JSON.stringify({ tenant }),
+    headers: { 'Content-Type': 'application/json' },
+  }).then<{ data?: any; error?: string }>((res) => res.json())
+}
+
+export function NewTenant() {
   const [showDialog, setShowDialog] = useState(false)
   const cancelRef = useRef(null)
   const formRef = useRef<HTMLFormElement>(null)
   const open = () => setShowDialog(true)
   const close = () => setShowDialog(false)
+
+  const [mutate] = useMutation(saveTenantRequest)
 
   async function saveTenant(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -41,19 +48,17 @@ export function NewTenant({
       }
     }
 
-    const result = await fetch('/api/polka/routes/tenants', {
-      method: 'POST',
-      body: JSON.stringify({ tenant }),
-      headers: { 'Content-Type': 'application/json' },
-    }).then((res) => res.json())
+    const result = await mutate(tenant as Tenant, {
+      onSuccess: () => {
+        queryCache.refetchQueries('tenants', { exact: true })
+      },
+    })
 
     if (result.error) {
       alert(result.error)
     } else if (result.data) {
       console.log({ result: result.data })
     }
-
-    refetchTenants()
 
     close()
   }

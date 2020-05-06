@@ -8,13 +8,13 @@ async function fetchTenants() {
 }
 
 export default function Tenants() {
-  const { status, data, refetch } = useQuery('tenants', fetchTenants)
+  const { status, data } = useQuery('tenants', fetchTenants)
 
   return (
     <Layout>
       <div className="flex justify-between items-center">
         <h1 className="py-8 m-0">Tenants</h1>
-        <NewTenant refetchTenants={refetch} />
+        <NewTenant />
       </div>
       {status === 'loading' && <p>Loading...</p>}
       {data && data.map((t) => <p key={t.id}>{t.full_name}</p>)}
