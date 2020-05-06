@@ -3,6 +3,7 @@ import { propertyRoutes } from './properties'
 import { unitRoutes } from './units'
 import { tenantRoutes } from './tenants'
 import { dashboardRoutes } from './dashboard'
+import { authRoutes } from './auth'
 import { verifyToken } from 'server/utils'
 
 async function auth(req, res, next) {
@@ -13,9 +14,12 @@ async function auth(req, res, next) {
 }
 
 const apiRoutes = polka()
+  .use(auth)
   .use('properties', propertyRoutes)
   .use('units', unitRoutes)
   .use('tenants', tenantRoutes)
   .use('dashboard', dashboardRoutes)
 
-export const app = polka().use(auth).use('/api/polka/routes', apiRoutes)
+export const app = polka()
+  .use('/api/polka/auth', authRoutes)
+  .use('/api/polka/routes', apiRoutes)

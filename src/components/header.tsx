@@ -5,7 +5,7 @@ import PropertySelect from './property-select'
 export default function Nav() {
   async function logOut() {
     try {
-      await fetch('/api/logout', { method: 'POST' })
+      await fetch('/api/polka/auth/logout', { method: 'POST' })
     } catch (e) {
       console.log('Error', e)
     } finally {

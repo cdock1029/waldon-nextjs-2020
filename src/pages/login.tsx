@@ -18,7 +18,7 @@ export default function Login() {
         const cred = await auth.signInWithEmailAndPassword(email, password)
         const token = await cred.user?.getIdToken()
 
-        await fetch('/api/login', {
+        await fetch('/api/polka/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
