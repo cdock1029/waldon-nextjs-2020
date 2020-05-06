@@ -17,9 +17,9 @@ export default function Unit() {
     fetchUnit
   )
   return (
-    <Layout>
+    <div>
       <h1 className="m-0 py-8 text-3xl">Unit: {unit ? unit.name : ''}</h1>
       <p>todo</p>
-    </Layout>
+    </div>
   )
 }

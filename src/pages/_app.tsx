@@ -1,12 +1,25 @@
 import 'styles/index.css'
+import 'material-components-web/dist/material-components-web.min.css'
+import '@rmwc/select/select.css'
 import Head from 'next/head'
+import { ThemeProvider } from 'rmwc'
 import { PropertyProvider } from 'client'
+import { Layout } from 'components'
 
-function MyApp({ Component, pageProps }) {
+export default function WaldonApp({ Component, pageProps }) {
+  const isLogin = Component && Component.name && Component.name === 'Login'
   return (
     <>
       <Head>
         <title>Waldon</title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        ></link>
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        ></link>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -34,11 +47,25 @@ function MyApp({ Component, pageProps }) {
           }}
         />
       </Head>
-      <PropertyProvider>
-        <Component {...pageProps} />
-      </PropertyProvider>
+      <ThemeProvider
+        className="mdc-theme--background mdc-typography theme-provider h-screen max-h-screen overflow-hidden"
+        options={{
+          primary: 'blue',
+          secondary: 'red',
+          background: '#90A4AE',
+          surface: '#ECEFF1',
+        }}
+      >
+        <PropertyProvider>
+          {isLogin ? (
+            <Component {...pageProps} />
+          ) : (
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          )}
+        </PropertyProvider>
+      </ThemeProvider>
     </>
   )
 }
-
-export default MyApp

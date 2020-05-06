@@ -25,7 +25,7 @@ export default function Index() {
     return <h1>{(error as any).message}</h1>
   }
   return (
-    <Layout>
+    <div>
       {status === 'loading' && <Loading />}
       <div className="py-8">
         <h1 className="text-3xl m-0">
@@ -136,7 +136,7 @@ export default function Index() {
           overflow: hidden;
         }
       `}</style>
-    </Layout>
+    </div>
   )
 }
 

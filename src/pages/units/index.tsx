@@ -22,7 +22,7 @@ function Units() {
     fetchUnits
   )
   return (
-    <Layout>
+    <div>
       <div className="py-8">
         <h1 className="text-3xl m-0">
           {property ? property.name : <span>&nbsp;</span>}
@@ -40,7 +40,7 @@ function Units() {
             </p>
           ))}
       </div>
-    </Layout>
+    </div>
   )
 }
 

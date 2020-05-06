@@ -12,7 +12,7 @@ export default function Tenants() {
   const { status, data } = useQuery('tenants', fetchTenants)
 
   return (
-    <Layout>
+    <div>
       <div className="flex justify-between items-center">
         <h1 className="py-8 m-0">Tenants</h1>
         <NewTenant />
@@ -26,6 +26,6 @@ export default function Tenants() {
             </Link>
           </p>
         ))}
-    </Layout>
+    </div>
   )
 }
