@@ -1,8 +1,10 @@
 import 'styles/index.css'
 import Head from 'next/head'
 import { PropertyProvider } from 'client'
+import { Layout } from 'components'
 
 function MyApp({ Component, pageProps }) {
+  const isLogin = Component.name === 'Login'
   return (
     <>
       <Head>
@@ -34,9 +36,15 @@ function MyApp({ Component, pageProps }) {
           }}
         />
       </Head>
-      <PropertyProvider>
+      {isLogin ? (
         <Component {...pageProps} />
-      </PropertyProvider>
+      ) : (
+        <PropertyProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </PropertyProvider>
+      )}
     </>
   )
 }

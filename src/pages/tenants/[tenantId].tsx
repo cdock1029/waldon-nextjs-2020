@@ -1,5 +1,4 @@
-import Router, { useRouter } from 'next/router'
-import { Layout } from 'components'
+import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { fetchGuard } from 'client'
 
@@ -17,7 +16,7 @@ export default function Tenant(props) {
   )
 
   return (
-    <Layout>
+    <>
       <div className="py-8">
         <h1 className="text-3xl m-0">
           {tenant ? tenant.full_name : <span>&nbsp;</span>}
@@ -25,6 +24,6 @@ export default function Tenant(props) {
         <small className="opacity-75 font-semibold uppercase">Tenant</small>
       </div>
       <div>Content</div>
-    </Layout>
+    </>
   )
 }

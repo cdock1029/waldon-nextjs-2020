@@ -6,9 +6,38 @@ import {
   useEffect,
 } from 'react'
 import Router from 'next/router'
+import formateDate from 'intl-dateformat'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
 import { useQuery } from 'react-query'
+
+type Result<T> = { data?: T; redirect?: boolean; error?: string }
+export async function fetchGuard<T>(requestInfo: RequestInfo) {
+  const controller = new AbortController()
+  const signal = controller.signal
+
+  const promise: Promise<T | undefined> & { cancel?: () => void } = fetch(
+    requestInfo,
+    {
+      method: 'get',
+      signal,
+    }
+  )
+    .then((res) => res.json())
+    .then(async (result: Result<T>) => {
+      if (result.redirect) {
+        await Router.replace('/login')
+        return
+      }
+      if (result.error) {
+        console.log('**fetch error**', result.error)
+        throw new Error(result.error)
+      }
+      return result.data
+    })
+  promise.cancel = controller.abort
+  return promise
+}
 
 async function fetchProperties() {
   const result = await fetch('/api/polka/routes/properties')
@@ -59,4 +88,8 @@ export function useSelectedProperty() {
     setPostRenderState(ctx)
   }, [ctx, setPostRenderState])
   return postRenderState
+}
+
+export function format(str: string, mask?: string) {
+  return formateDate(new Date(str), mask || 'YYYY MMM DD')
 }

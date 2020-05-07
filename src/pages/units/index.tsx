@@ -1,18 +1,9 @@
 import Link from 'next/link'
 import { useQuery } from 'react-query'
-import { useSelectedProperty } from 'client'
-import Router from 'next/router'
-import { Layout } from 'components'
+import { useSelectedProperty, fetchGuard } from 'client'
 
-async function fetchUnits(key, propertyId: number): Promise<Unit[]> {
-  const json = await fetch(
-    `/api/polka/routes/units?propertyId=${propertyId}`
-  ).then((res) => res.json())
-  if (json.redirect) {
-    Router.replace(json.redirect)
-  }
-
-  return json.data
+async function fetchUnits(key, propertyId: number) {
+  return fetchGuard<Unit[]>(`/api/polka/routes/units?propertyId=${propertyId}`)
 }
 
 function Units() {
@@ -22,7 +13,7 @@ function Units() {
     fetchUnits
   )
   return (
-    <Layout>
+    <>
       <div className="py-8">
         <h1 className="text-3xl m-0">
           {property ? property.name : <span>&nbsp;</span>}
@@ -40,7 +31,7 @@ function Units() {
             </p>
           ))}
       </div>
-    </Layout>
+    </>
   )
 }
 

@@ -1,8 +1,7 @@
-import { useState } from 'react'
-import Router from 'next/router'
+import { useState, Fragment } from 'react'
 import { useQuery } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
-import { Loading, Layout, Transactions } from 'components'
+import { Loading, Transactions } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, propertyId: number) {
@@ -11,9 +10,11 @@ async function fetchData(key, propertyId: number) {
   )
 }
 
+const minRows = 8
+const colSpan = 8
 export default function Index() {
   const { property } = useSelectedProperty()
-  const { data, status, error } = useQuery(
+  const { data: raw, status, error } = useQuery(
     () => ['dashboard', property!.id],
     fetchData
   )
@@ -26,8 +27,11 @@ export default function Index() {
   if (error) {
     return <h1>{(error as any).message}</h1>
   }
+
+  let data = raw ?? []
+
   return (
-    <Layout>
+    <>
       {status === 'loading' && <Loading />}
       <div className="py-8">
         <h1 className="text-3xl m-0">
@@ -37,76 +41,81 @@ export default function Index() {
           Active leases
         </small>
       </div>
-      {data && (
-        <div className="shadow-md rounded bg-gray-700">
-          <table className="table-auto text-sm w-full border-collapse">
-            <thead className="opacity-50 uppercase">
-              <tr>
-                <th></th>
-                <th align="right">Unit</th>
-                <th align="left">Tenant</th>
-                <th align="right">Start</th>
-                <th align="right">End</th>
-                <th align="right">Rent</th>
-                <th align="right">Balance</th>
-                <th align="center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="font-mono">
-              {data.map((lease) => (
-                <tr key={lease.id} className="odd:bg-gray-600 even:bg-gray-700">
+      <div className="shadow-lg">
+        <table className="table-auto text-sm w-full border-collapse">
+          <thead className="opacity-50 uppercase">
+            <tr className="bg-gray-700">
+              <th></th>
+              <th align="right">Unit</th>
+              <th align="left">Tenant</th>
+              <th align="left">Start</th>
+              <th align="left">End</th>
+              <th align="right">Rent</th>
+              <th align="right">Balance</th>
+              <th align="center">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="font-mono">
+            {data.map((lease) => (
+              <Fragment key={lease.id}>
+                <tr className="bg-gray-700 odd:bg-opacity-75">
                   <td align="center">
                     <button
                       onClick={() => toggleExpanded(lease.id)}
                       tabIndex={-1}
-                      className="shadow"
+                      className="text-lg h-8 flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none"
                     >
-                      &#9660;
+                      {expanded === lease.id ? (
+                        <span>&#9650;</span>
+                      ) : (
+                        <span>&#9660;</span>
+                      )}
                     </button>
                   </td>
                   <td align="right">{lease.unit}</td>
                   <td className="tenant" title={lease.tenant}>
                     <div className="select-all">{lease.tenant}</div>
                   </td>
-                  <td align="right">{format(lease.start_date)}</td>
-                  <td align="right">{format(lease.end_date)}</td>
+                  <td align="left" title={format(lease.start_date, 'dddd')}>
+                    {format(lease.start_date)}
+                  </td>
+                  <td align="left" title={format(lease.end_date, 'dddd')}>
+                    {format(lease.end_date)}
+                  </td>
                   <td align="right">{lease.rent}</td>
                   <td align="right">{lease.balance}</td>
                   <td align="center">
                     <ActionsMenu rent={lease.rent} balance={lease.balance} />
                   </td>
                 </tr>
-              ))}
-              {expanded ? (
-                <tr key="expanded" className="odd:bg-gray-600 even:bg-gray-700">
-                  <td className="expanded-cell" colSpan={8}>
-                    <Transactions leaseId={expanded} />
-                  </td>
-                </tr>
-              ) : null}
-              <tr className="odd:bg-gray-600 even:bg-gray-700">
-                <td align="center">
-                  <button tabIndex={-1} className="shadow">
-                    &#9660;
-                  </button>
-                </td>
-
-                <td align="right">31-102</td>
-                <td>Daffy Duck</td>
-                <td align="right">{format('2019-04-01')}</td>
-                <td align="right">{format('2020-04-01')}</td>
-                <td align="right">$700.00</td>
-                <td align="right" className="text-red-200">
-                  $30.00
-                </td>
-                <td align="center">
-                  <ActionsMenu rent={'$700.00'} balance={'$30.00'} />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
+                {expanded ? (
+                  <tr key="expanded" className="bg-gray-700 odd:bg-opacity-75">
+                    <td className="expanded-cell" colSpan={8}>
+                      <Transactions leaseId={expanded} />
+                    </td>
+                  </tr>
+                ) : null}
+              </Fragment>
+            ))}
+            {data.length < minRows
+              ? Array(minRows - data.length)
+                  .fill(0)
+                  .map((_, i) => {
+                    return (
+                      <tr
+                        key={`fill-${i}`}
+                        className="bg-gray-700 odd:bg-opacity-75"
+                      >
+                        <td colSpan={colSpan}>
+                          <div className="h-8"></div>
+                        </td>
+                      </tr>
+                    )
+                  })
+              : null}
+          </tbody>
+        </table>
+      </div>
       <style jsx>{`
         td,
         th {
@@ -125,15 +134,15 @@ export default function Index() {
           overflow: hidden;
         }
       `}</style>
-    </Layout>
+    </>
   )
 }
 
 function ActionsMenu({ rent, balance }) {
   return (
     <Menu>
-      <MenuButton>
-        Actions <span aria-hidden>▾</span>
+      <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
+        <Dots />
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => alert('Pay rent')}>Pay {rent}</MenuItem>
@@ -146,5 +155,26 @@ function ActionsMenu({ rent, balance }) {
         <MenuItem onSelect={() => alert('Pay custom')}>Add charge...</MenuItem>
       </MenuList>
     </Menu>
+  )
+}
+
+function Dots() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+      shapeRendering="geometricPrecision"
+      style={{ color: 'currentcolor' }}
+    >
+      <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+      <circle cx="12" cy="5" r="1" fill="currentColor"></circle>
+      <circle cx="12" cy="19" r="1" fill="currentColor"></circle>
+    </svg>
   )
 }

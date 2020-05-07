@@ -15,7 +15,7 @@ export default function Nav() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 h-15 flex items-center bg-gray-900 px-8">
+    <header className="fixed z-20 inset-x-0 top-0 h-15 flex items-center bg-gray-900 px-8">
       <nav className="flex-1 flex text-lg items-center max-w-screen-xl mx-auto">
         <Link href="/">
           <a className="mr-8 -ml-2 p-2 text-teal-400 font-bold text-teal-100 no-underline">

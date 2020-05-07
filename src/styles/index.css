@@ -16,11 +16,11 @@ a:visited {
   @apply text-teal-400;
 }
 button {
-  @apply cursor-pointer shadow-md py-1 px-4 bg-gray-700 text-teal-200 border-solid border-teal-200 border-opacity-25 rounded-sm;
+  @apply outline-none cursor-pointer shadow-md py-1 px-4 bg-gray-700 text-teal-200 border-solid border-teal-200 border-opacity-25 rounded-sm;
   border-width: 1px;
 }
 button:hover {
-  @apply bg-gray-800 shadow-lg;
+  @apply bg-gray-800 shadow-lg text-teal-100;
 }
 button:active {
   @apply bg-gray-900 shadow-lg;

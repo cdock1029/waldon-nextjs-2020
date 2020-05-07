@@ -16,6 +16,15 @@ module.exports = {
       'hover',
       'focus',
     ],
+    backgroundOpacity: [
+      'responsive',
+      'first',
+      'last',
+      'even',
+      'odd',
+      'hover',
+      'focus',
+    ],
   },
   plugins: [require('@tailwindcss/ui')],
 }

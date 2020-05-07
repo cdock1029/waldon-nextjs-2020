@@ -7,6 +7,7 @@ function fetchTxns(key, leaseId: number) {
   )
 }
 
+const minRows = 2
 export function Transactions({ leaseId }: { leaseId: number }) {
   const { status, data, error } = useQuery(['transactions', leaseId], fetchTxns)
 

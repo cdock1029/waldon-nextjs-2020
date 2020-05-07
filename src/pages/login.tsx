@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Router from 'next/router'
-import { auth } from 'client/firebase'
+import { auth } from 'client'
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date()
@@ -24,13 +24,16 @@ export default function Login() {
 
       try {
         const cred = await auth.signInWithEmailAndPassword(email, password)
-        const token = await cred.user?.getIdToken()
+        const token = await cred.user?.getIdToken(true)
 
         await fetch('/api/polka/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
         })
+        try {
+          await auth.signOut()
+        } catch (e) {}
         setCookie('wpmauth', '1', 6)
         Router.replace('/')
       } catch (e) {
