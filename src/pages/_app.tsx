@@ -3,40 +3,20 @@ import Head from 'next/head'
 import { PropertyProvider } from 'client'
 import { Layout } from 'components'
 
+const isLogin = (Comp) => Comp.displayName && Comp.displayName === 'Login'
+
 function MyApp({ Component, pageProps }) {
-  const isLogin = Component.name === 'Login'
   return (
     <>
       <Head>
         <title>Waldon</title>
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-            
-            function getCookie(cname) {
-              var name = cname + "=";
-              var decodedCookie = decodeURIComponent(document.cookie);
-              var ca = decodedCookie.split(';');
-              for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                  c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                  return c.substring(name.length, c.length);
-                }
-              }
-              return "";
-            } 
-            
-            if (!getCookie('wpmauth')) {
-              if (location.pathname !== '/login')
-                window.location.href = '/login'
-              }`,
+            __html: `function getCookie(o){for(var n=o+"=",t=decodeURIComponent(document.cookie).split(";"),e=0;e<t.length;e++){for(var i=t[e];" "==i.charAt(0);)i=i.substring(1);if(0==i.indexOf(n))return i.substring(n.length,i.length)}return""}getCookie("wpmauth")||"/login"!==location.pathname&&(window.location.href="/login");`,
           }}
         />
       </Head>
-      {isLogin ? (
+      {isLogin(Component) ? (
         <Component {...pageProps} />
       ) : (
         <PropertyProvider>

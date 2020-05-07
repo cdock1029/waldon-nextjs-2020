@@ -9,7 +9,7 @@ function setCookie(cname, cvalue, exdays) {
   document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
 }
 
-export default function Login() {
+function Login() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -84,3 +84,7 @@ export default function Login() {
     </div>
   )
 }
+
+Login.displayName = 'Login'
+
+export default Login
