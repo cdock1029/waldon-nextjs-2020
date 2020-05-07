@@ -4,7 +4,7 @@ import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 function PropertySelect() {
   const { property, updateProperty } = useSelectedProperty()
   const { data } = useProperties()
-  return data ? (
+  return (
     <Menu>
       <MenuButton>
         {property ? property.name : 'Select property'}{' '}
@@ -16,16 +16,17 @@ function PropertySelect() {
             Clear selection
           </MenuItem>
         ) : null}
-        {data.map((p) => {
-          return (
-            <MenuItem onSelect={() => updateProperty(p)} key={p.id}>
-              {p.name}
-            </MenuItem>
-          )
-        })}
+        {data &&
+          data.map((p) => {
+            return (
+              <MenuItem onSelect={() => updateProperty(p)} key={p.id}>
+                {p.name}
+              </MenuItem>
+            )
+          })}
       </MenuList>
     </Menu>
-  ) : null
+  )
 }
 
 export default PropertySelect
