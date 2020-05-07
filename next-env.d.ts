@@ -21,3 +21,10 @@ type Tenant = {
   suffix?: string
   email?: string
 }
+
+type Transaction = {
+  id: number
+  txn_date: string
+  amount: string
+  type: string
+}

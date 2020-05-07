@@ -16,7 +16,7 @@ a:visited {
   @apply text-teal-400;
 }
 button {
-  @apply cursor-pointer shadow-md py-1 px-2 bg-gray-700 text-teal-200 border-solid border-gray-900 border-opacity-50 rounded-sm;
+  @apply cursor-pointer shadow-md py-1 px-4 bg-gray-700 text-teal-200 border-solid border-teal-200 border-opacity-25 rounded-sm;
   border-width: 1px;
 }
 button:hover {

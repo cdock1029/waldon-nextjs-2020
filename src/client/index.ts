@@ -36,6 +36,7 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
         return
       }
       if (result.error) {
+        console.log('**fetch error**', result.error)
         throw new Error(result.error)
       }
       return result.data

@@ -2,8 +2,6 @@ import polka from 'polka'
 import { db } from 'server'
 import type { NextApiResponse } from 'next'
 
-console.log('unit routes parsed?')
-
 export const unitRoutes = polka()
   .get('/', async function units(req, res: NextApiResponse) {
     res.status(200).json({

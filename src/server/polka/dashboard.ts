@@ -7,13 +7,17 @@ export const dashboardRoutes = polka().get('/', async function dashboard(
   res: NextApiResponse
 ) {
   res.status(200).json({
-    data: await Dashboard.leases(),
+    data: await Dashboard.leases({ propertyId: req.query.propertyId }),
   })
 })
 
 export const Dashboard = {
-  async leases({ limit = 50, offset = 0 } = {}) {
-    return db<any>('leases')
+  async leases({
+    limit = 50,
+    offset = 0,
+    propertyId = undefined,
+  }: { limit?: number; offset?: number; propertyId?: number } = {}) {
+    const query = db<any>('leases')
       .join('units', 'leases.unit_id', '=', 'units.id')
       .join('lease_tenants', 'lease_tenants.lease_id', '=', 'leases.id')
       .join('tenants', 'tenants.id', '=', 'lease_tenants.tenant_id')
@@ -31,6 +35,10 @@ export const Dashboard = {
       ])
       .limit(limit)
       .offset(offset)
+    if (propertyId) {
+      query.where('units.property_id', '=', propertyId)
+    }
+    return query
   },
 
   transactionsByLeaseId({

@@ -1,25 +1,27 @@
+import { useState } from 'react'
 import Router from 'next/router'
 import { useQuery } from 'react-query'
-import { format, useSelectedProperty } from 'client'
-import { Loading, Layout } from 'components'
+import { format, useSelectedProperty, fetchGuard } from 'client'
+import { Loading, Layout, Transactions } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
-async function fetchData() {
-  const result = await fetch('/api/polka/routes/dashboard').then((res) =>
-    res.json()
+async function fetchData(key, propertyId: number) {
+  return fetchGuard<any[]>(
+    `/api/polka/routes/dashboard?propertyId=${propertyId || ''}`
   )
-  if (result.redirect) {
-    Router.replace(result.redirect)
-  }
-  return result.data
 }
 
 export default function Index() {
   const { property } = useSelectedProperty()
-  const { data, status, error } = useQuery<any[], string>(
-    'dashboard',
+  const { data, status, error } = useQuery(
+    () => ['dashboard', property!.id],
     fetchData
   )
+  const [expanded, setExpanded] = useState<number | null>(null)
+
+  function toggleExpanded(id: number) {
+    setExpanded((curr) => (curr === id ? null : id))
+  }
 
   if (error) {
     return <h1>{(error as any).message}</h1>
@@ -52,9 +54,13 @@ export default function Index() {
             </thead>
             <tbody className="font-mono">
               {data.map((lease) => (
-                <tr key={lease.id} className="odd:bg-gray-600 even:bg-white">
+                <tr key={lease.id} className="odd:bg-gray-600 even:bg-gray-700">
                   <td align="center">
-                    <button tabIndex={-1} className="shadow">
+                    <button
+                      onClick={() => toggleExpanded(lease.id)}
+                      tabIndex={-1}
+                      className="shadow"
+                    >
                       &#9660;
                     </button>
                   </td>
@@ -71,31 +77,14 @@ export default function Index() {
                   </td>
                 </tr>
               ))}
-              {/* <tr>
-              <td colSpan={8} className="expanded-cell p-0">
-                <div className="bg-green-200 p-8">
-                  <table className="text-sm text-gray-800 table-auto w-full border-collapse">
-                    <caption>Transactions</caption>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>2020-04-01</td>
-                        <th>$500.00</th>
-                        <th>RENT</th>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </td>
-            </tr> */}
-              {/*<tr className="last:rounded-b-sm odd:bg-gray-200 even:bg-gray-100">*/}
-              <tr>
+              {expanded ? (
+                <tr key="expanded" className="odd:bg-gray-600 even:bg-gray-700">
+                  <td className="expanded-cell" colSpan={8}>
+                    <Transactions leaseId={expanded} />
+                  </td>
+                </tr>
+              ) : null}
+              <tr className="odd:bg-gray-600 even:bg-gray-700">
                 <td align="center">
                   <button tabIndex={-1} className="shadow">
                     &#9660;
@@ -121,11 +110,11 @@ export default function Index() {
       <style jsx>{`
         td,
         th {
-          /* border-bottom: 1px solid #ccc;*/
           padding: 1.5rem 1rem;
         }
         td.expanded-cell {
-          padding: 0;
+          padding: 2.5rem 2rem 3rem 2rem;
+        }
         }
         td.tenant {
           max-width: calc(15vw);
