@@ -22,6 +22,11 @@ export default function Nav() {
             Home
           </a>
         </Link>
+        <Link href="/properties">
+          <a className="mr-8 -ml-2 p-2 text-teal-400 font-bold text-teal-100 no-underline">
+            Properties
+          </a>
+        </Link>
         <Link href="/units">
           <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
             Units

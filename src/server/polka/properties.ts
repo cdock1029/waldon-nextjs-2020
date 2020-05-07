@@ -14,7 +14,7 @@ export const propertyRoutes = polka()
 
 export const Properties = {
   list({ limit = 10, orderBy = 'name' } = {}) {
-    return db('properties').select('*').orderBy(orderBy).limit(limit)
+    return db('properties').select('id', 'name').orderBy(orderBy).limit(limit)
   },
 
   async byId({ id }: { id: number }) {
