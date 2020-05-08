@@ -25,7 +25,7 @@ exports.up = function (knex: Knex) {
     unique(full_name)
 
   );
-  CREATE TRIGGER tenant_update BEFORE UPDATE ON tenant FOR EACH ROW EXECUTE procedure set_current_timestamp_updated_at();
+  CREATE TRIGGER wpm_tenant_update BEFORE UPDATE ON tenant FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
   create index wpm_tenant_last_first_active on tenant(last_name, first_name) where deleted_at is null;
   create index wpm_tenant_last_all on tenant(last_name);

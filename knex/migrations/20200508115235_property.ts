@@ -8,10 +8,13 @@ exports.up = async function (knex: Knex) {
     updated_at timestamp not null default now(),
     name citext not null unique
   );
-  CREATE TRIGGER property_update BEFORE UPDATE ON property FOR EACH ROW EXECUTE procedure set_current_timestamp_updated_at();
+  CREATE TRIGGER wpm_property_update BEFORE UPDATE ON property FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
   create index wpm_property_created on property(created_at desc);
   create index wpm_property_updated on property(updated_at desc);
+  create index wpm_property_name on property(name);
+
+
   `)
 }
 

@@ -6,7 +6,7 @@ exports.up = async function (knex: Knex) {
   CREATE EXTENSION IF not exists citext;
   CREATE EXTENSION if not exists btree_gist;
 
-  CREATE FUNCTION set_current_timestamp_updated_at() RETURNS trigger
+  CREATE or replace FUNCTION wpm_set_current_timestamp_updated_at() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
   DECLARE
@@ -25,6 +25,6 @@ exports.down = function (knex: Knex) {
   return knex.schema.raw(`
   drop extension citext;
   drop extension btree_gist;
-  drop function if exists set_current_timestamp_updated_at;
+  drop function if exists wpm_set_current_timestamp_updated_at;
   `)
 }

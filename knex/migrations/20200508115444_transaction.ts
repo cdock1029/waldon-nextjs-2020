@@ -44,9 +44,9 @@ exports.up = function (knex: Knex) {
   -- type partitioned, date ordered
   create index wpm_txn_type_date on transaction (type, date desc);
 
-  CREATE TRIGGER transaction_update BEFORE UPDATE ON transaction FOR EACH ROW EXECUTE procedure set_current_timestamp_updated_at();
+  CREATE TRIGGER wpm_transaction_update BEFORE UPDATE ON transaction FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
-  CREATE FUNCTION add_txn_to_lease_balance()
+  CREATE or replace FUNCTION wpm_add_txn_to_lease_balance()
     RETURNS trigger
     LANGUAGE 'plpgsql'
   AS $BODY$
@@ -77,17 +77,21 @@ exports.up = function (knex: Knex) {
   END
   $BODY$;
 
-  CREATE TRIGGER add_txn_to_balance
+  CREATE TRIGGER wpm_add_txn_to_balance_trg
     AFTER INSERT OR DELETE OR UPDATE 
     ON transaction
     FOR EACH ROW
-    EXECUTE PROCEDURE add_txn_to_lease_balance();
+    EXECUTE PROCEDURE wpm_add_txn_to_lease_balance();
 
   `)
 }
 
 exports.down = async function (knex: Knex) {
   // enum
-  await knex.schema.raw('drop type txn_type;')
-  return knex.schema.dropTableIfExists('transactions')
+
+  await knex.schema.dropTableIfExists('transaction')
+  await knex.schema.raw(`
+  drop type txn_type;
+  drop function if exists wpm_add_txn_to_lease_balance;
+  `)
 }

@@ -28,7 +28,7 @@ exports.up = function (knex: Knex) {
       daterange(start_date, end_date) with &&
     ) where (deleted_at is null)
   );
-  CREATE TRIGGER lease_update BEFORE UPDATE ON lease FOR EACH ROW EXECUTE procedure set_current_timestamp_updated_at();
+  CREATE TRIGGER wpm_lease_update BEFORE UPDATE ON lease FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
   -- use for querying active leases, even with daterange in past
   create index wpm_lease_daterange_active_idx on lease(daterange(start_date, end_date)) where deleted_at is null;
