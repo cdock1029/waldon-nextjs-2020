@@ -38,6 +38,7 @@
     "postcss-preset-env": "^6.7.0",
     "postinstall-postinstall": "^2.1.0",
     "tailwindcss": "^1.4.4",
+    "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
   },
   "browserslist": [
