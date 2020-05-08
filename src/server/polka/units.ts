@@ -18,7 +18,7 @@ export const unitRoutes = polka()
 
 export const Units = {
   async list({ limit = 10, orderBy = 'name' } = {}) {
-    return db<Unit>('units').select('*').orderBy(orderBy).limit(limit)
+    return db<Unit>('unit').select('*').orderBy(orderBy).limit(limit)
   },
 
   async listForProperty({
@@ -30,7 +30,7 @@ export const Units = {
     limit?: number
     orderBy?: string
   }) {
-    return db<Unit>('units')
+    return db<Unit>('unit')
       .select('*')
       .where('property_id', '=', propertyId)
       .orderBy(orderBy)
@@ -38,6 +38,6 @@ export const Units = {
   },
 
   async byId({ id }: { id: number }) {
-    return db<Unit>('units').first('*').where('id', '=', id)
+    return db<Unit>('unit').first('*').where('id', '=', id)
   },
 }

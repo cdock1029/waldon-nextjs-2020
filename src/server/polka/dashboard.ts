@@ -17,26 +17,23 @@ export const Dashboard = {
     offset = 0,
     propertyId = undefined,
   }: { limit?: number; offset?: number; propertyId?: number } = {}) {
-    const query = db<any>('leases')
-      .join('units', 'leases.unit_id', '=', 'units.id')
-      .join('lease_tenants', 'lease_tenants.lease_id', '=', 'leases.id')
-      .join('tenants', 'tenants.id', '=', 'lease_tenants.tenant_id')
-      .distinctOn('leases.unit_id')
+    const query = db<any>('lease')
+      .join('unit', 'lease.unit_id', '=', 'unit.id')
+      .join('lease_tenant', 'lease_tenant.lease_id', '=', 'lease.id')
+      .join('tenant', 'tenant.id', '=', 'lease_tenant.tenant_id')
+      .distinctOn('lease.unit_id')
       .select(
-        'units.name as unit',
+        'unit.name as unit',
         db.raw(
-          "string_agg(tenants.full_name, ',') over (partition by lease_tenants.lease_id) as tenant"
+          "string_agg(tenant.full_name, ',') over (partition by lease_tenant.lease_id) as tenant"
         ),
-        'leases.*'
+        'lease.*'
       )
-      .orderBy([
-        'leases.unit_id',
-        { column: 'leases.start_date', order: 'desc' },
-      ])
+      .orderBy(['lease.unit_id', { column: 'lease.start_date', order: 'desc' }])
       .limit(limit)
       .offset(offset)
     if (propertyId) {
-      query.where('units.property_id', '=', propertyId)
+      query.where('unit.property_id', '=', propertyId)
     }
     return query
   },
@@ -50,7 +47,7 @@ export const Dashboard = {
     limit?: number
     offset?: number
   }) {
-    return db('transactions')
+    return db('transaction')
       .select('*')
       .where('lease_id', '=', leaseId)
       .limit(limit)

@@ -25,17 +25,17 @@ export const Tenants = {
   list({ limit = 10, orderBy = ['last_name', 'first_name'] } = {}): Promise<
     Tenant[]
   > {
-    return db<Tenant>('tenants')
+    return db<Tenant>('tenant')
       .select('*')
       .whereNull('deleted_at')
       .orderBy(orderBy)
   },
 
   byId({ id }: { id: number }): Promise<Tenant> {
-    return db<Tenant>('tenants').first('*').where('id', '=', id)
+    return db<Tenant>('tenant').first('*').where('id', '=', id)
   },
 
   async createTenant(tenant: Tenant): Promise<number[]> {
-    return db<Tenant>('tenants').insert(tenant)
+    return db<Tenant>('tenant').insert(tenant)
   },
 }

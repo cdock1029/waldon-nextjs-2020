@@ -28,7 +28,7 @@ export const Transactions = {
     limit?: number
     orderBy?: [string, string]
   }) {
-    return db<Transaction>('transactions')
+    return db<Transaction>('transaction')
       .select('*')
       .where('lease_id', '=', leaseId)
       .orderBy(...orderBy)
