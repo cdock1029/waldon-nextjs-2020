@@ -5,7 +5,7 @@ import { Loading, Transactions } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, propertyId: number) {
-  return fetchGuard<any[]>(
+  return fetchGuard<DashboardLease[]>(
     `/api/polka/routes/dashboard?propertyId=${propertyId || ''}`
   )
 }
@@ -88,7 +88,7 @@ export default function Index() {
                     <ActionsMenu rent={lease.rent} balance={lease.balance} />
                   </td>
                 </tr>
-                {expanded ? (
+                {expanded === lease.id ? (
                   <tr key="expanded" className="bg-gray-700 odd:bg-opacity-75">
                     <td className="expanded-cell" colSpan={8}>
                       <Transactions leaseId={expanded} />

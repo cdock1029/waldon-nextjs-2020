@@ -20,7 +20,7 @@ exports.up = function (knex: Knex) {
       || COALESCE(' ' || suffix, '')
     ) stored,
 
-    notes citext,
+    notes text,
 
     unique(full_name)
 

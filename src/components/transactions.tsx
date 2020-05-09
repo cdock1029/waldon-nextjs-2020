@@ -34,7 +34,7 @@ export function Transactions({ leaseId }: { leaseId: number }) {
               data.map((t) => (
                 <tr key={t.id}>
                   <td align="right" className="w-48">
-                    {format(t.txn_date)}
+                    {format(t.date)}
                   </td>
                   <td align="right">{t.amount}</td>
                   <td align="center" className="uppercase">

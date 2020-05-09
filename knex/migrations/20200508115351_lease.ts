@@ -8,6 +8,8 @@ exports.up = function (knex: Knex) {
     updated_at timestamp not null default now(),
     deleted_at timestamp,
 
+    evicted_at date check(evicted_at <@ daterange(start_date, end_date)),
+
     rent money not null check(rent > 0::money),
     balance money not null default 0::money,
 
@@ -22,11 +24,13 @@ exports.up = function (knex: Knex) {
 
     unit_id integer not null references unit(id),
 
-    -- no overlapping lease dates for a unit
+    notes text,
+
+    -- no overlapping lease dates for a unit if not evicted or 'deleted'
     exclude using gist (
       unit_id with =,
       daterange(start_date, end_date) with &&
-    ) where (deleted_at is null)
+    ) where (deleted_at is null AND evicted_at is null)
   );
   CREATE TRIGGER wpm_lease_update BEFORE UPDATE ON lease FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
@@ -36,6 +40,8 @@ exports.up = function (knex: Knex) {
 
   create index wpm_lease_created on lease(created_at desc);
   create index wpm_lease_updated on lease(updated_at desc);
+
+  create index wpm_lease_evicted on lease(evicted_at desc) where evicted_at is not null;
   `)
 }
 

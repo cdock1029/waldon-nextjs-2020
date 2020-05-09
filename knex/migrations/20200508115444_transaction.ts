@@ -25,13 +25,13 @@ exports.up = function (knex: Knex) {
     ),
     lease_id integer not null references lease(id) on delete cascade,
     type txn_type not null,
-    memo text check(trim(memo) = memo),
+    notes text check(trim(notes) = notes),
 
     exclude using gist (
       amount with =,
       type with =,
       date with =,
-      memo with = 
+      notes with = 
     ) where (deleted_at is null)
   );
   create index wpm_txn_created on transaction(created_at desc);

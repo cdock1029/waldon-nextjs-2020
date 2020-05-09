@@ -22,7 +22,7 @@ export const Transactions = {
   async listForLease({
     leaseId,
     limit = 10,
-    orderBy = ['txn_date', 'desc'],
+    orderBy = ['date', 'desc'],
   }: {
     leaseId: number
     limit?: number
