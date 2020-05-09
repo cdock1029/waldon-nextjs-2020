@@ -27,6 +27,8 @@ export async function seed(knex: Knex): Promise<any> {
           security_deposit_collected: '2019-07-05',
           start_date: '2019-07-01',
           end_date: '2020-07-01',
+          notes:
+            'When initialized, should have -650 balance with 2 rent payments applied, 1 rent charge',
         },
 
         {
