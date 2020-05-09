@@ -5,11 +5,8 @@ import { db } from 'server'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export const authRoutes = polka()
-  .post('/login', async function signin(
-    req: NextApiRequest,
-    res: NextApiResponse
-  ) {
-    ;(req as any).session.user = null
+  .post('/login', async function signin(req, res: NextApiResponse) {
+    req.session.user = null
     const { username, password } = req.body
     if (!username || !password) {
       return res
@@ -25,16 +22,20 @@ export const authRoutes = polka()
       return res.status(401).send({ error: 'credentials invalid' })
     }
 
-    bcrypt.compare(password, user.password_digest, (err, response) => {
-      if (err || !response) {
+    try {
+      const response = await bcrypt.compare(password, user.password_digest)
+      if (!response) {
         return res.status(401).json({ error: 'credentials invalid' })
       }
-
+      console.log('bcrypt true')
       delete user.password_digest
-      ;(req as any).session.user = user
-
+      req.session = { user }
+      console.log({ session: req.session })
       return res.status(200).json({ user })
-    })
+    } catch (err) {
+      console.log('bcrypt compare err:', err)
+      return res.status(401).json({ error: 'credentials invalid' })
+    }
   })
   .post('/logout', async function signout(req, res: NextApiResponse) {
     req.session = null
