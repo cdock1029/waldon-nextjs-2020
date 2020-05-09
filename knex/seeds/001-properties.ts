@@ -11,6 +11,7 @@ export async function seed(knex: Knex): Promise<any> {
         { name: 'West View Village' },
         { name: 'West View Village II' },
         { name: 'Westchester Commons' },
+        { name: 'Newton Commons' },
         { name: 'Niles Executive' },
         { name: 'Westchester Executive' },
       ])

@@ -40,36 +40,37 @@ export const authRoutes = polka()
     req.session = null
     return res.status(205).json({ data: 'logged out', redirect: '/login' })
   })
-  .post('/signup', function signup(req: NextApiRequest, res: NextApiResponse) {
+  .post('/signup', async function signup(req, res: NextApiResponse) {
+    req.session = null
     const { username, password, email } = req.body
     if (!username || !password || !email) {
       return res
         .status(400)
         .json({ error: 'invalid request. missing credentials' })
     }
+    const allowed = await db('allowed_user')
+      .first('username')
+      .where('username', '=', username)
+    if (!allowed) {
+      return res.status(403).send('forbidden')
+    }
 
-    bcrypt.hash(password, 10, async (err, password_digest) => {
-      if (err || !password_digest) {
-        console.error('/signup error: ', err)
-        return res.status(400).json({ error: 'invalid request' })
-      }
-
-      try {
-        const result: any = await db('wpm_user').insert({
-          username,
-          email,
-          password_digest,
-        })
-        return res.status(201).json({ data: true })
-      } catch (e) {
-        return res.status(400).json({
-          error:
-            e.code === '23505'
-              ? 'user already exists'
-              : 'credentials invalid, creating user failed.',
-        })
-      }
-    })
+    try {
+      const password_digest = await bcrypt.hash(password, 10)
+      await db('wpm_user').insert({
+        username,
+        email,
+        password_digest,
+      })
+      return res.status(201).json({ data: true })
+    } catch (e) {
+      return res.status(400).json({
+        error:
+          e.code === '23505'
+            ? 'user already exists'
+            : 'credentials invalid, creating user failed.',
+      })
+    }
   })
   .get('/test', function test(req, res: NextApiResponse) {
     if (req.session && req.session.user) {
