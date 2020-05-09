@@ -11,6 +11,7 @@ function saveTenantRequest(tenant: Tenant) {
     method: 'POST',
     body: JSON.stringify({ tenant }),
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
   }).then<{ data?: any; error?: string }>((res) => res.json())
 }
 

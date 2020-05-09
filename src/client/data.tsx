@@ -21,6 +21,7 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
     {
       method: 'get',
       signal,
+      credentials: 'same-origin',
     }
   )
     .then((res) => res.json())
@@ -40,7 +41,9 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
 }
 
 async function fetchProperties() {
-  const result = await fetch('/api/polka/routes/properties')
+  const result = await fetch('/api/polka/routes/properties', {
+    credentials: 'same-origin',
+  })
   const json = await result.json()
   if (json.redirect) {
     Router.replace(json.redirect)
