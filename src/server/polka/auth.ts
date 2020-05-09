@@ -1,65 +1,11 @@
 import polka from 'polka'
-import { serialize } from 'cookie'
 import * as bcrypt from 'bcrypt'
-import { createSessionCookie, revokeSession } from 'server/utils'
 import { db } from 'server'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export const authRoutes = polka()
-  .post('/login', async function login(
-    req: NextApiRequest,
-    res: NextApiResponse
-  ) {
-    const token = req.body.token
-
-    // Set session expiration to 5 days.
-    const expiresIn = 60 * 60 * 24 * 5 * 1000
-    // Create the session cookie. This will also verify the ID token in the process.
-    // The session cookie will have the same claims as the ID token.
-
-    // @todo: To only allow session cookie setting on recent sign-in, auth_time in ID token
-    // can be checked to ensure user was recently signed in before creating a session cookie.
-    try {
-      const sessionCookie = await createSessionCookie(token, { expiresIn })
-      const cookie = serialize('session', sessionCookie, {
-        maxAge: expiresIn,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/api/',
-        sameSite: 'strict',
-      })
-      res.setHeader('Set-Cookie', cookie)
-      res.status(200).json({ done: true })
-    } catch (error) {
-      res.status(401).send('Unauthorized')
-    }
-  })
-  .post('/logout', async function logout(
-    req: NextApiRequest,
-    res: NextApiResponse
-  ) {
-    const sessionCookie = req.cookies.session || ''
-
-    const cookie = serialize('session', '', {
-      maxAge: -1,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      sameSite: 'strict',
-    })
-    res.setHeader('Set-Cookie', cookie)
-
-    try {
-      await revokeSession(sessionCookie)
-    } catch (e) {
-      console.error('Error revoking cookie session:', e.message)
-    } finally {
-      res.writeHead(302, { Location: '/login' })
-      res.end()
-    }
-  })
-  .post('/signin', async function signin(
+  .post('/login', async function signin(
     req: NextApiRequest,
     res: NextApiResponse
   ) {
@@ -90,14 +36,9 @@ export const authRoutes = polka()
       return res.status(200).json({ user })
     })
   })
-  .post('/signout', async function signout(req, res: NextApiResponse) {
-    if (req.session && req.session.user) {
-      console.log('session exists. deleting')
-      req.session = null
-    } else {
-      console.log('session not found')
-    }
-    return res.status(205).json({ data: 'signed out', redirect: '/login' })
+  .post('/logout', async function signout(req, res: NextApiResponse) {
+    req.session = null
+    return res.status(205).json({ data: 'logged out', redirect: '/login' })
   })
   .post('/signup', function signup(req: NextApiRequest, res: NextApiResponse) {
     const { username, password, email } = req.body
@@ -129,7 +70,6 @@ export const authRoutes = polka()
         })
       }
     })
-    // db('user').insert({})
   })
   .get('/test', function test(req, res: NextApiResponse) {
     if (req.session && req.session.user) {

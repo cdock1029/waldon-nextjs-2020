@@ -19,23 +19,26 @@ function Login() {
       setBusy(true)
       const target = e.target
 
-      const email = target['email'].value
+      const username = target['username'].value
       const password = target['password'].value
 
       try {
-        const cred = await auth.signInWithEmailAndPassword(email, password)
-        const token = await cred.user?.getIdToken(true)
+        // const cred = await auth.signInWithEmailAndPassword(email, password)
+        // const token = await cred.user?.getIdToken(true)
 
-        await fetch('/api/polka/auth/login', {
+        const result = await fetch('/api/polka/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        })
-        try {
-          await auth.signOut()
-        } catch (e) {}
-        setCookie('wpmauth', '1', 6)
-        Router.replace('/')
+          body: JSON.stringify({ username, password }),
+        }).then((res) => res.json())
+
+        console.log('login result:', result)
+        if (!result.error && result.user) {
+          setCookie('wpmauth', '1', 6)
+          Router.replace('/')
+        } else {
+          setError(result.error)
+        }
       } catch (e) {
         setError(e.message)
       } finally {
@@ -50,14 +53,14 @@ function Login() {
         className="rounded shadow-md bg-gray-700 p-8"
       >
         <h1>Sign in</h1>
-        <label htmlFor="email" className="flex flex-col py-4">
-          <div className="pb-2">Email</div>
+        <label htmlFor="username" className="flex flex-col py-4">
+          <div className="pb-2">Username</div>
           <input
             required
-            type="email"
-            name="email"
-            id="email"
-            placeholder="Email"
+            type="text"
+            name="username"
+            id="username"
+            placeholder="Username"
             className="text-lg p-1"
           />
         </label>

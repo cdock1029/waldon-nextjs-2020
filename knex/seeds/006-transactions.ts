@@ -1,9 +1,9 @@
 import * as Knex from 'knex'
 
 export async function seed(knex: Knex): Promise<any> {
-  return knex('transactions')
+  return knex('transaction')
     .del()
     .then(() => {
-      return knex('transactions').insert([])
+      return knex('transaction').insert([])
     })
 }
