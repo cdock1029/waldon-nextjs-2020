@@ -14,7 +14,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       `}</style>
       <footer className="py-16">
         <div className="max-w-screen-xl w-full mx-auto">
-          <div>This is some text in footer</div>
+          <img src="/business.svg" alt="building" height="32" width="32" />
         </div>
       </footer>
     </div>
