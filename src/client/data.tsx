@@ -41,18 +41,11 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
 }
 
 async function fetchProperties() {
-  const result = await fetch('/api/polka/routes/properties', {
-    credentials: 'same-origin',
-  })
-  const json = await result.json()
-  if (json.redirect) {
-    Router.replace(json.redirect)
-  }
-  return json.data
+  return fetchGuard<Property[]>('/api/polka/routes/properties')
 }
 
 export function useProperties() {
-  return useQuery<Property[], string>('properties', fetchProperties)
+  return useQuery('properties', fetchProperties)
 }
 
 type PropertyContext = {

@@ -11,7 +11,7 @@ async function fetchData(key, propertyId: number) {
 }
 
 const minRows = 8
-const colSpan = 8
+const colSpan = 9
 export default function Index() {
   const { property } = useSelectedProperty()
   const { data: raw, status, error } = useQuery(
@@ -43,13 +43,14 @@ export default function Index() {
       </div>
       <div className="shadow-lg">
         <table className="table-auto text-sm w-full border-collapse">
-          <thead className="opacity-50 uppercase">
+          <thead className="uppercase">
             <tr className="bg-gray-700">
               <th></th>
               <th align="right">Unit</th>
               <th align="left">Tenant</th>
               <th align="left">Start</th>
               <th align="left">End</th>
+              <th align="right">Security deposit</th>
               <th align="right">Rent</th>
               <th align="right">Balance</th>
               <th align="center">Actions</th>
@@ -82,15 +83,23 @@ export default function Index() {
                   <td align="left" title={format(lease.end_date, 'dddd')}>
                     {format(lease.end_date)}
                   </td>
+                  <td align="right">{lease.security_deposit}</td>
                   <td align="right">{lease.rent}</td>
-                  <td align="right">{lease.balance}</td>
+                  <td align="right" className="">
+                    {lease.balance}
+                  </td>
                   <td align="center">
-                    <ActionsMenu rent={lease.rent} balance={lease.balance} />
+                    <ActionsMenu
+                      leaseId={lease.id}
+                      rent={lease.rent}
+                      balance={lease.balance}
+                      toggleCallback={() => toggleExpanded(lease.id)}
+                    />
                   </td>
                 </tr>
                 {expanded === lease.id ? (
                   <tr key="expanded" className="bg-gray-700 odd:bg-opacity-75">
-                    <td className="expanded-cell" colSpan={8}>
+                    <td className="expanded-cell" colSpan={colSpan}>
                       <Transactions leaseId={expanded} />
                     </td>
                   </tr>
@@ -138,16 +147,48 @@ export default function Index() {
   )
 }
 
-function ActionsMenu({ rent, balance }) {
+async function payBalance(leaseId: number) {
+  if (confirm('Confirm paying balance?')) {
+    try {
+      const result = await fetch('/api/polka/routes/transactions/pay_balance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leaseId }),
+        credentials: 'same-origin',
+      })
+      // alert('Balance paid!')
+    } catch (e) {
+      alert(e.message)
+    }
+  }
+}
+async function payRent(leaseId: number) {
+  if (confirm('Confirm paying rent?')) {
+    try {
+      const result = await fetch('/api/polka/routes/transactions/pay_rent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leaseId }),
+        credentials: 'same-origin',
+      })
+      // alert('Rent paid!')
+    } catch (e) {
+      alert(e.message)
+    }
+  }
+}
+function ActionsMenu({ rent, balance, leaseId, toggleCallback }) {
   return (
     <Menu>
       <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
         <Dots />
       </MenuButton>
       <MenuList>
-        <MenuItem onSelect={() => alert('Pay rent')}>Pay {rent}</MenuItem>
-        {balance !== '$0.00' && (
-          <MenuItem onSelect={() => alert('Pay balance')}>
+        <MenuItem onSelect={() => payRent(leaseId).then(toggleCallback)}>
+          Pay {rent}
+        </MenuItem>
+        {balance !== '$0.00' && !balance.startsWith('-') && (
+          <MenuItem onSelect={() => payBalance(leaseId).then(toggleCallback)}>
             Pay {balance}
           </MenuItem>
         )}

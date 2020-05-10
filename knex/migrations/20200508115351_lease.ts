@@ -22,7 +22,7 @@ exports.up = function (knex: Knex) {
 
     parent_id integer references lease(id),
 
-    unit_id integer not null references unit(id),
+    unit_id integer not null references unit(id) on delete cascade,
 
     notes text,
 
