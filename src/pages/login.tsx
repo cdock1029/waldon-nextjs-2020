@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Router from 'next/router'
-import { auth } from 'client'
 
 function setCookie(cname, cvalue, exdays) {
   var d = new Date()
@@ -23,9 +22,6 @@ function Login() {
       const password = target['password'].value
 
       try {
-        // const cred = await auth.signInWithEmailAndPassword(email, password)
-        // const token = await cred.user?.getIdToken(true)
-
         const result = await fetch('/api/polka/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

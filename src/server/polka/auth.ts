@@ -6,7 +6,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 export const authRoutes = polka()
   .post('/login', async function signin(req, res: NextApiResponse) {
-    req.session.user = null
     const { username, password } = req.body
     if (!username || !password) {
       return res
@@ -29,8 +28,11 @@ export const authRoutes = polka()
       }
       console.log('bcrypt true')
       delete user.password_digest
-      req.session = { user }
-      console.log({ session: req.session })
+
+      req.session.set('user', user)
+      await req.session.save()
+
+      console.log({ session: req.session.get('user') })
       return res.status(200).json({ user })
     } catch (err) {
       console.log('bcrypt compare err:', err)
@@ -38,11 +40,10 @@ export const authRoutes = polka()
     }
   })
   .post('/logout', async function signout(req, res: NextApiResponse) {
-    req.session = null
+    req.session.destroy()
     return res.status(205).json({ data: 'logged out', redirect: '/login' })
   })
   .post('/signup', async function signup(req, res: NextApiResponse) {
-    req.session = null
     const { username, password, email } = req.body
     if (!username || !password || !email) {
       return res
@@ -74,8 +75,9 @@ export const authRoutes = polka()
     }
   })
   .get('/test', function test(req, res: NextApiResponse) {
-    if (req.session && req.session.user) {
-      return res.status(200).json({ data: 'user session exists' })
+    const user = req.session.get('user')
+    if (user) {
+      return res.status(200).json({ data: 'user session exists', user })
     } else {
       return res.status(200).json({ data: 'no user session' })
     }
