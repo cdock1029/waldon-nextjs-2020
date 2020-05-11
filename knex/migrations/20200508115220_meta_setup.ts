@@ -23,8 +23,6 @@ exports.up = async function (knex: Knex) {
 
 exports.down = function (knex: Knex) {
   return knex.schema.raw(`
-  drop extension citext;
-  drop extension btree_gist;
   drop function if exists wpm_set_current_timestamp_updated_at;
   `)
 }
