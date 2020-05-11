@@ -1,5 +1,5 @@
 import { useState, Fragment } from 'react'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation, queryCache } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
 import { Loading, Transactions } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
@@ -93,7 +93,7 @@ export default function Index() {
                       leaseId={lease.id}
                       rent={lease.rent}
                       balance={lease.balance}
-                      toggleCallback={() => toggleExpanded(lease.id)}
+                      toggleCallback={() => setExpanded(lease.id)}
                     />
                   </td>
                 </tr>
@@ -148,47 +148,83 @@ export default function Index() {
 }
 
 async function payBalance(leaseId: number) {
-  if (confirm('Confirm paying balance?')) {
-    try {
-      const result = await fetch('/api/polka/routes/transactions/pay_balance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leaseId }),
-        credentials: 'same-origin',
-      })
-      // alert('Balance paid!')
-    } catch (e) {
-      alert(e.message)
-    }
+  try {
+    const result = await fetch('/api/polka/routes/transactions/pay_balance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leaseId }),
+      credentials: 'same-origin',
+    })
+    // alert('Balance paid!')
+  } catch (e) {
+    alert(e.message)
   }
 }
 async function payRent(leaseId: number) {
-  if (confirm('Confirm paying rent?')) {
-    try {
-      const result = await fetch('/api/polka/routes/transactions/pay_rent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leaseId }),
-        credentials: 'same-origin',
-      })
-      // alert('Rent paid!')
-    } catch (e) {
-      alert(e.message)
-    }
+  try {
+    const result = await fetch('/api/polka/routes/transactions/pay_rent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ leaseId }),
+      credentials: 'same-origin',
+    })
+  } catch (e) {
+    alert(e.message)
   }
 }
 function ActionsMenu({ rent, balance, leaseId, toggleCallback }) {
+  const [mutatePayBalance] = useMutation(payBalance)
+  const [mutatePayRent] = useMutation(payRent)
   return (
     <Menu>
       <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
-        <Dots />
+        <svg
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          shapeRendering="geometricPrecision"
+          style={{ color: 'currentcolor' }}
+        >
+          <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="5" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="19" r="1" fill="currentColor"></circle>
+        </svg>
       </MenuButton>
       <MenuList>
-        <MenuItem onSelect={() => payRent(leaseId).then(toggleCallback)}>
+        <MenuItem
+          onSelect={async () => {
+            if (confirm('Confirm paying rent?')) {
+              await mutatePayRent(leaseId, {
+                onSuccess() {
+                  queryCache
+                    .refetchQueries(['transactions', leaseId])
+                    .then(toggleCallback)
+                },
+              })
+            }
+          }}
+        >
           Pay {rent}
         </MenuItem>
         {balance !== '$0.00' && !balance.startsWith('-') && (
-          <MenuItem onSelect={() => payBalance(leaseId).then(toggleCallback)}>
+          <MenuItem
+            onSelect={async () => {
+              if (confirm('Confirm paying balance?')) {
+                await mutatePayBalance(leaseId, {
+                  onSuccess() {
+                    queryCache
+                      .refetchQueries(['transactions', leaseId])
+                      .then(toggleCallback)
+                  },
+                })
+              }
+            }}
+          >
             Pay {balance}
           </MenuItem>
         )}
@@ -196,26 +232,5 @@ function ActionsMenu({ rent, balance, leaseId, toggleCallback }) {
         <MenuItem onSelect={() => alert('Pay custom')}>Add charge...</MenuItem>
       </MenuList>
     </Menu>
-  )
-}
-
-function Dots() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      stroke="currentColor"
-      strokeWidth="1"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-      shapeRendering="geometricPrecision"
-      style={{ color: 'currentcolor' }}
-    >
-      <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
-      <circle cx="12" cy="5" r="1" fill="currentColor"></circle>
-      <circle cx="12" cy="19" r="1" fill="currentColor"></circle>
-    </svg>
   )
 }

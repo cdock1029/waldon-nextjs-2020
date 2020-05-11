@@ -31,6 +31,7 @@ exports.up = function (knex: Knex) {
       amount with =,
       type with =,
       date with =,
+      lease_id with =,
       notes with = 
     ) where (deleted_at is null)
   );
