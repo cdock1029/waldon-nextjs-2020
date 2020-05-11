@@ -6,7 +6,7 @@ import {
   useEffect,
 } from 'react'
 import Router from 'next/router'
-import formateDate from 'intl-dateformat'
+import formatDate from 'intl-dateformat'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
 import { useQuery } from 'react-query'
@@ -87,5 +87,5 @@ export function useSelectedProperty() {
 }
 
 export function format(str: string, mask?: string) {
-  return formateDate(new Date(str), mask || 'YYYY MMM DD')
+  return formatDate(new Date(str), mask || 'YYYY MMM DD')
 }

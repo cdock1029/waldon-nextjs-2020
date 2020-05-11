@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react'
-import { useQuery, useMutation, queryCache } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
-import { Loading, Transactions } from 'components'
+import { Loading, Transactions, PaymentConfirm } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, propertyId: number) {
@@ -14,7 +14,7 @@ const minRows = 8
 const colSpan = 9
 export default function Index() {
   const { property } = useSelectedProperty()
-  const { data: raw, status, error } = useQuery(
+  const { data: raw, status, error, refetch } = useQuery(
     () => ['dashboard', property!.id],
     fetchData
   )
@@ -91,9 +91,12 @@ export default function Index() {
                   <td align="center">
                     <ActionsMenu
                       leaseId={lease.id}
+                      property={property!.name}
+                      unit={lease.unit}
+                      tenant={lease.tenant.split(',')}
                       rent={lease.rent}
                       balance={lease.balance}
-                      toggleCallback={() => setExpanded(lease.id)}
+                      refetchDashboard={refetch}
                     />
                   </td>
                 </tr>
@@ -155,7 +158,6 @@ async function payBalance(leaseId: number) {
       body: JSON.stringify({ leaseId }),
       credentials: 'same-origin',
     })
-    // alert('Balance paid!')
   } catch (e) {
     alert(e.message)
   }
@@ -172,65 +174,120 @@ async function payRent(leaseId: number) {
     alert(e.message)
   }
 }
-function ActionsMenu({ rent, balance, leaseId, toggleCallback }) {
+
+type LeaseActionProps = {
+  rent: string
+  balance: string
+  leaseId: number
+  property: string
+  unit: string
+  tenant: string[]
+  refetchDashboard: () => Promise<any>
+}
+function ActionsMenu({
+  rent,
+  balance,
+  leaseId,
+  property,
+  unit,
+  tenant,
+  refetchDashboard,
+}: LeaseActionProps) {
   const [mutatePayBalance] = useMutation(payBalance)
   const [mutatePayRent] = useMutation(payRent)
+
+  const [showConfirm, setShowConfirm] = useState<{
+    url: string
+    amount?: string
+    property: string
+    unit: string
+    tenant: string[]
+    custom: boolean
+    leaseId: number
+  } | null>(null)
+  function dismiss() {
+    setShowConfirm(null)
+  }
   return (
-    <Menu>
-      <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
-        <svg
-          viewBox="0 0 24 24"
-          width="18"
-          height="18"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          shapeRendering="geometricPrecision"
-          style={{ color: 'currentcolor' }}
-        >
-          <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
-          <circle cx="12" cy="5" r="1" fill="currentColor"></circle>
-          <circle cx="12" cy="19" r="1" fill="currentColor"></circle>
-        </svg>
-      </MenuButton>
-      <MenuList>
-        <MenuItem
-          onSelect={async () => {
-            if (confirm('Confirm paying rent?')) {
-              await mutatePayRent(leaseId, {
-                onSuccess() {
-                  queryCache
-                    .refetchQueries(['transactions', leaseId])
-                    .then(toggleCallback)
-                },
-              })
-            }
-          }}
-        >
-          Pay {rent}
-        </MenuItem>
-        {balance !== '$0.00' && !balance.startsWith('-') && (
+    <>
+      {showConfirm && (
+        <PaymentConfirm
+          {...showConfirm}
+          dismiss={dismiss}
+          refetchDashboard={refetchDashboard}
+        />
+      )}
+      <Menu>
+        <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
+          <svg
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            shapeRendering="geometricPrecision"
+            style={{ color: 'currentcolor' }}
+          >
+            <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+            <circle cx="12" cy="5" r="1" fill="currentColor"></circle>
+            <circle cx="12" cy="19" r="1" fill="currentColor"></circle>
+          </svg>
+        </MenuButton>
+        <MenuList>
           <MenuItem
-            onSelect={async () => {
-              if (confirm('Confirm paying balance?')) {
-                await mutatePayBalance(leaseId, {
-                  onSuccess() {
-                    queryCache
-                      .refetchQueries(['transactions', leaseId])
-                      .then(toggleCallback)
-                  },
-                })
-              }
+            onSelect={() => {
+              setShowConfirm({
+                leaseId,
+                amount: rent,
+                custom: false,
+                property,
+                tenant,
+                unit,
+                url: '/api/polka/routes/transactions/pay_rent',
+              })
             }}
           >
-            Pay {balance}
+            Pay {rent}
           </MenuItem>
-        )}
-        <MenuItem onSelect={() => alert('Pay custom')}>Pay custom...</MenuItem>
-        <MenuItem onSelect={() => alert('Pay custom')}>Add charge...</MenuItem>
-      </MenuList>
-    </Menu>
+          {balance !== '$0.00' && !balance.startsWith('-') && (
+            <MenuItem
+              onSelect={() => {
+                setShowConfirm({
+                  leaseId,
+                  amount: balance,
+                  custom: false,
+                  property,
+                  tenant,
+                  unit,
+                  url: '/api/polka/routes/transactions/pay_balance',
+                })
+              }}
+            >
+              Pay {balance}
+            </MenuItem>
+          )}
+          <MenuItem
+            onSelect={() => {
+              setShowConfirm({
+                leaseId,
+                custom: true,
+                property,
+                tenant,
+                unit,
+                url: '/api/polka/routes/transactions/pay_custom',
+              })
+            }}
+          >
+            Pay custom...
+          </MenuItem>
+          <MenuItem onSelect={() => alert('Pay custom')}>
+            Add charge...
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </>
   )
 }

@@ -65,7 +65,6 @@ export function NewTenant() {
   }
 
   function requestSubmit() {
-    console.log('request submit')
     formRef.current?.requestSubmit()
   }
   return (

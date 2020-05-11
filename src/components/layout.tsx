@@ -10,6 +10,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <style jsx>{`
         .layout {
           overflow-y: overlay;
+          overflow-x: hidden;
         }
       `}</style>
       <footer className="py-16">

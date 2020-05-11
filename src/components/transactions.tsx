@@ -121,7 +121,9 @@ function ActionsMenu({ transactionId, leaseId }) {
             if (confirm('Confirm: do you want to delete transation?')) {
               await mutate(transactionId, {
                 async onSuccess() {
-                  await queryCache.refetchQueries(['transactions', leaseId])
+                  await queryCache.refetchQueries(['transactions', leaseId], {
+                    exact: true,
+                  })
                 },
               })
             }
