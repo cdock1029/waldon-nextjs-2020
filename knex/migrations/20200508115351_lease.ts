@@ -39,6 +39,9 @@ exports.up = function (knex: Knex) {
   create index wpm_lease_daterange_active_idx on lease(span) where deleted_at is null;
   create index wpm_lease_unit_idx on lease(unit_id, end_date desc nulls last);
 
+  -- index leases that have parents (extended leases)
+  create index wpm_lease_parent_idx on lease(parent_id) where parent_id is not null;
+
   create index wpm_lease_created on lease(created_at desc);
   create index wpm_lease_updated on lease(updated_at desc);
 

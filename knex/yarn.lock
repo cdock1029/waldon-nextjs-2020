@@ -780,10 +780,10 @@ pg-connection-string@2.2.0:
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.2.0.tgz#caab4d38a9de4fdc29c9317acceed752897de41c"
   integrity sha512-xB/+wxcpFipUZOQcSzcgkjcNOosGhEoPSjz06jC89lv1dj7mc9bZv6wLVy8M2fVjP0a/xN0N988YDq1L0FhK3A==
 
-pg-copy-streams@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pg-copy-streams/-/pg-copy-streams-3.0.0.tgz#69b95ec237079bb2b8ced95f7a9e52bd372c2a68"
-  integrity sha512-6CTt97w+X54rseUkRE0aUP+LqEvMgI9DFSMT7qm5Lw3HuhQaCitbmCB9IwMrWD/rdDXceOS2JPWSxz+pDC+09A==
+pg-copy-streams@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/pg-copy-streams/-/pg-copy-streams-4.0.0.tgz#a57109367dfd8dc223159ab26b685b17991f3895"
+  integrity sha512-L+x9B3aXde/CC6m878GHFqFDQr6jSF0uvGNHhbXOk1rdD8Xg1IK6lEg8I3/zbH9CoP0Xyy71a6+JjqkzWw7G3g==
   dependencies:
     obuf "^1.1.2"
 
