@@ -6,6 +6,7 @@ import {
 } from '@reach/alert-dialog'
 import { useMutation, queryCache } from 'react-query'
 import formatDate from 'intl-dateformat'
+import { convertDateToUTC } from 'client'
 
 type PaymentConfirmProps = {
   leaseId: number
@@ -38,8 +39,8 @@ async function makePayment({ url, ...rest }: MakePaymentProps) {
 export function PaymentConfirm(props: PaymentConfirmProps) {
   const cancelRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const dateRef = useRef<HTMLInputElement>(null)
 
-  const [date, setDate] = useState(formatDate(new Date(), 'YYYY-MM-DD'))
   const [paymentAmount, setPaymentAmount] = useState(props.amount)
 
   const [mutate] = useMutation(makePayment)
@@ -50,14 +51,23 @@ export function PaymentConfirm(props: PaymentConfirmProps) {
   async function submitPayment(e: React.FormEvent) {
     e.preventDefault()
 
+    const dateVal = dateRef.current?.valueAsDate!
+
+    console.log('initial', dateVal.toString(), '\n ISO:', dateVal.toISOString())
+
+    dateVal.setMinutes(dateVal.getMinutes() + dateVal.getTimezoneOffset())
+
+    console.log('updated', dateVal.toString(), '\n ISO:', dateVal.toISOString())
+
     let paymentProps: MakePaymentProps = {
       leaseId: props.leaseId,
       amount: paymentAmount,
-      date,
+      date: dateVal.toISOString(),
       url: props.url,
     }
 
     console.log('submit', paymentProps)
+
     try {
       await mutate(paymentProps, {
         async onSuccess() {
@@ -124,11 +134,11 @@ export function PaymentConfirm(props: PaymentConfirmProps) {
             <label>
               Date
               <input
+                defaultValue={formatDate(new Date(), 'YYYY-MM-DD')}
+                ref={dateRef}
                 type="date"
                 name="date"
                 required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
               />
             </label>
           </form>

@@ -17,7 +17,7 @@ exports.up = function (knex: Knex) {
     updated_at timestamp not null default now(),
     deleted_at timestamp,
 
-    date date not null default now(),
+    date timestamp not null default now(),
     amount money not null check(
       type = 'rent'::txn_type AND amount > 0::money OR
       type = 'late_fee'::txn_type AND amount > 0::money OR
@@ -25,15 +25,8 @@ exports.up = function (knex: Knex) {
     ),
     lease_id integer not null references lease(id) on delete cascade,
     type txn_type not null,
-    notes text check(trim(notes) = notes),
-
-    exclude using gist (
-      amount with =,
-      type with =,
-      date with =,
-      lease_id with =,
-      notes with = 
-    ) where (deleted_at is null)
+    notes text check(trim(notes) = notes)
+    
   );
   create index wpm_txn_created on transaction(created_at desc);
   create index wpm_txn_updated on transaction(updated_at desc);

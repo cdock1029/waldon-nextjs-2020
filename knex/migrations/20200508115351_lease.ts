@@ -8,17 +8,18 @@ exports.up = function (knex: Knex) {
     updated_at timestamp not null default now(),
     deleted_at timestamp,
 
-    evicted_at date check(evicted_at <@ daterange(start_date, end_date)),
+    evicted_at timestamp check(evicted_at::date <@ span),
 
     rent money not null check(rent > 0::money),
     balance money not null default 0::money,
 
     security_deposit money not null default 0::money,
-    security_deposit_collected date,
-    security_deposit_returned date check(security_deposit_returned >= security_deposit_collected),
+    security_deposit_collected timestamp,
+    security_deposit_returned timestamp check(security_deposit_returned >= security_deposit_collected),
 
-    start_date date not null,
-    end_date date not null check(end_date > start_date),
+    start_date timestamp not null,
+    end_date timestamp not null check(end_date > start_date),
+    span daterange generated always as (daterange(start_date::date, end_date::date)) stored,
 
     parent_id integer references lease(id),
 
@@ -29,13 +30,13 @@ exports.up = function (knex: Knex) {
     -- no overlapping lease dates for a unit if not evicted or 'deleted'
     exclude using gist (
       unit_id with =,
-      daterange(start_date, end_date) with &&
+      span with &&
     ) where (deleted_at is null AND evicted_at is null)
   );
   CREATE TRIGGER wpm_lease_update BEFORE UPDATE ON lease FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
 
   -- use for querying active leases, even with daterange in past
-  create index wpm_lease_daterange_active_idx on lease(daterange(start_date, end_date)) where deleted_at is null;
+  create index wpm_lease_daterange_active_idx on lease(span) where deleted_at is null;
   create index wpm_lease_unit_idx on lease(unit_id, end_date desc nulls last);
 
   create index wpm_lease_created on lease(created_at desc);

@@ -2,46 +2,29 @@ import * as Knex from 'knex'
 
 export async function up(knex: Knex): Promise<any> {
   return knex.schema.raw(`
-  CREATE or replace FUNCTION wpm_pay_balance(lease_id integer, date date default now()) RETURNS BOOLEAN
-    LANGUAGE plpgsql
+  CREATE or replace FUNCTION wpm_pay_balance(_id integer, _time timestamp default now()) RETURNS int
     AS $$
-  DECLARE
-    _id integer;
-    _date date;
-  BEGIN
-    _id := lease_id;
-    _date := date;
 
     with l as (
       select * from lease where id = _id
     )
     insert into transaction (date, amount, type, lease_id, notes)
-    select _date, (-1 * l.balance), 'payment', _id, 'Pay off balance' from l;
+    select _time, (-1 * l.balance), 'payment', _id, 'Pay off balance' from l
+    returning transaction.id;
 
-  RETURN true;
-  END;
-  $$;
+  $$ LANGUAGE SQL;
 
-  CREATE or replace FUNCTION wpm_pay_rent(lease_id integer, date date default now()) RETURNS BOOLEAN
-    LANGUAGE plpgsql
+  CREATE or replace FUNCTION wpm_pay_rent(_id integer, _time timestamp default now()) RETURNS int
     AS $$
-  DECLARE
-    _id integer;
-    _date date;
-  BEGIN
-    _id := lease_id;
-    _date := date;
 
     with l as (
       select * from lease where id = _id
     )
     insert into transaction (date, amount, type, lease_id, notes)
-    select _date, (-1 * l.rent), 'payment', _id, 'Pay rent' from l;
+    select _time, (-1 * l.rent), 'payment', _id, 'Pay rent' from l
+    returning transaction.id;
 
-  RETURN true;
-  END;
-  $$;
-
+  $$ LANGUAGE SQL;
   `)
 }
 

@@ -14,13 +14,17 @@ export const transactionsRoutes = polka()
   })
   .post('/pay_balance', async function payBalance(req, res) {
     const { leaseId, date } = req.body
+    console.log('pay balance date', date)
     if (typeof leaseId !== 'number') {
       throw new Error('invalid argument')
     }
-    const d = date ? new Date(date) : new Date()
-    await db.schema.raw(`
-      select wpm_pay_balance(${leaseId}, '${d.toLocaleDateString()}'::date);
-    `)
+    let query
+    if (date) {
+      query = `select wpm_pay_balance(${leaseId}, '${date}');`
+    } else {
+      query = `select wpm_pay_balance(${leaseId});`
+    }
+    await db.schema.raw(query)
     return res.status(200).json({ data: 'success' })
   })
   .post('/pay_rent', async function payBalance(req, res) {
@@ -28,10 +32,13 @@ export const transactionsRoutes = polka()
     if (typeof leaseId !== 'number') {
       throw new Error('invalid argument')
     }
-    const d = date ? new Date(date) : new Date()
-    await db.schema.raw(`
-      select wpm_pay_rent(${leaseId}, '${d.toLocaleDateString()}'::date);
-    `)
+    let query
+    if (date) {
+      query = `select wpm_pay_rent(${leaseId},'${date}');`
+    } else {
+      query = `select wpm_pay_rent(${leaseId});`
+    }
+    await db.schema.raw(query)
     return res.status(200).json({ data: 'success' })
   })
   .post('/pay_custom', async function payBalance(req, res) {
@@ -43,15 +50,13 @@ export const transactionsRoutes = polka()
     ) {
       throw new Error('invalid argument')
     }
-    const d = date ? new Date(date) : new Date()
     await db('transaction').insert({
       lease_id: leaseId,
       type: 'payment',
       amount: `-${amount}`,
-      date: d,
+      date,
       notes: 'custom payment',
     })
-
     return res.status(200).json({ data: 'success' })
   })
   .delete('/:transactionId', async function deleteTransaction(req, res) {

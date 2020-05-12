@@ -89,3 +89,31 @@ export function useSelectedProperty() {
 export function format(str: string, mask?: string) {
   return formatDate(new Date(str), mask || 'YYYY MMM DD')
 }
+
+// literal local date values, UTC zone
+// ;(window as any).createDateAsUTC = function createDateAsUTC(date) {
+export function createDateAsUTC(date) {
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
+  )
+}
+
+// literal local zone, utc-converted values
+// ;(window as any).convertDateToUTC = function convertDateToUTC(date) {
+export function convertDateToUTC(date) {
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  )
+}
