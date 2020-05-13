@@ -16,7 +16,7 @@ export const transactionsRoutes = polka()
     const { leaseId, date } = req.body
     console.log('pay balance date', date)
     if (typeof leaseId !== 'number') {
-      throw new Error('invalid argument')
+      return res.status(422).json({ error: 'Invalid argument' })
     }
     let query
     if (date) {
@@ -30,7 +30,7 @@ export const transactionsRoutes = polka()
   .post('/pay_rent', async function payBalance(req, res) {
     const { leaseId, date } = req.body
     if (typeof leaseId !== 'number') {
-      throw new Error('invalid argument')
+      return res.status(422).json({ error: 'Invalid argument' })
     }
     let query
     if (date) {
@@ -48,7 +48,7 @@ export const transactionsRoutes = polka()
       typeof amount !== 'string' ||
       !amount.match(MONEY_REGEX)
     ) {
-      throw new Error('invalid argument')
+      return res.status(422).json({ error: 'Invalid argument' })
     }
     await db('transaction').insert({
       lease_id: leaseId,
@@ -56,6 +56,26 @@ export const transactionsRoutes = polka()
       amount: `-${amount}`,
       date,
       notes: 'custom payment',
+    })
+    return res.status(200).json({ data: 'success' })
+  })
+  .post('/charge_custom', async function payBalance(req, res) {
+    const { leaseId, amount, date, type } = req.body
+    if (
+      typeof leaseId !== 'number' ||
+      typeof amount !== 'string' ||
+      !amount.match(MONEY_REGEX) ||
+      (type !== 'rent' && type !== 'late_fee')
+    ) {
+      return res.status(422).json({ error: 'Invalid argument' })
+    }
+    await db('transaction').insert({
+      lease_id: leaseId,
+      type,
+      amount,
+      date,
+      // @todo: allow transacton notes to be passed by user
+      notes: 'charge applied',
     })
     return res.status(200).json({ data: 'success' })
   })

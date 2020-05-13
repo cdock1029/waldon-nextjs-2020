@@ -36,7 +36,7 @@ async function makePayment({ url, ...rest }: MakePaymentProps) {
   })
 }
 
-export function PaymentConfirm(props: PaymentConfirmProps) {
+export function PaymentModal(props: PaymentConfirmProps) {
   const cancelRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const dateRef = useRef<HTMLInputElement>(null)
@@ -70,14 +70,19 @@ export function PaymentConfirm(props: PaymentConfirmProps) {
 
     try {
       await mutate(paymentProps, {
-        async onSuccess() {
-          await Promise.all([
-            props.refetchDashboard(),
-            queryCache.refetchQueries(['transactions', props.leaseId], {
-              exact: true,
-            }),
-          ])
-          props.dismiss()
+        async onSuccess(response) {
+          const result = await response.json()
+          if (result.error) {
+            alert(result.error)
+          } else {
+            await Promise.all([
+              props.refetchDashboard(),
+              queryCache.refetchQueries(['transactions', props.leaseId], {
+                exact: true,
+              }),
+            ])
+            props.dismiss()
+          }
         },
         onError(e: any) {
           alert(e.message)

@@ -15,6 +15,12 @@ function MyApp({ Component, pageProps }) {
             __html: `function getCookie(o){for(var n=o+"=",t=decodeURIComponent(document.cookie).split(";"),e=0;e<t.length;e++){for(var i=t[e];" "==i.charAt(0);)i=i.substring(1);if(0==i.indexOf(n))return i.substring(n.length,i.length)}return""}getCookie("wpmauth")||"/login"!==location.pathname&&(window.location.href="/login");`,
           }}
         />
+        <link
+          rel="preload"
+          href="/api/polka/routes/properties"
+          as="fetch"
+          crossOrigin="anonymous"
+        ></link>
       </Head>
       {isLogin(Component) ? (
         <Component {...pageProps} />

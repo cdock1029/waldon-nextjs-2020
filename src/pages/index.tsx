@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react'
-import { useQuery, useMutation } from 'react-query'
+import { useQuery } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
-import { Loading, Transactions, PaymentConfirm } from 'components'
+import { Loading, Transactions, PaymentModal, ChargeModal } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
 async function fetchData(key, propertyId: number) {
@@ -150,31 +150,6 @@ export default function Index() {
   )
 }
 
-async function payBalance(leaseId: number) {
-  try {
-    const result = await fetch('/api/polka/routes/transactions/pay_balance', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leaseId }),
-      credentials: 'same-origin',
-    })
-  } catch (e) {
-    alert(e.message)
-  }
-}
-async function payRent(leaseId: number) {
-  try {
-    const result = await fetch('/api/polka/routes/transactions/pay_rent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leaseId }),
-      credentials: 'same-origin',
-    })
-  } catch (e) {
-    alert(e.message)
-  }
-}
-
 type LeaseActionProps = {
   rent: string
   balance: string
@@ -193,12 +168,10 @@ function ActionsMenu({
   tenant,
   refetchDashboard,
 }: LeaseActionProps) {
-  const [mutatePayBalance] = useMutation(payBalance)
-  const [mutatePayRent] = useMutation(payRent)
-
-  const [showConfirm, setShowConfirm] = useState<{
+  const [showModal, setShowModal] = useState<{
     url: string
     amount?: string
+    type: 'payment' | 'charge'
     property: string
     unit: string
     tenant: string[]
@@ -206,17 +179,23 @@ function ActionsMenu({
     leaseId: number
   } | null>(null)
   function dismiss() {
-    setShowConfirm(null)
+    setShowModal(null)
   }
   return (
     <>
-      {showConfirm && (
-        <PaymentConfirm
-          {...showConfirm}
+      {showModal && showModal.type === 'payment' ? (
+        <PaymentModal
+          {...showModal}
           dismiss={dismiss}
           refetchDashboard={refetchDashboard}
         />
-      )}
+      ) : showModal && showModal.type === 'charge' ? (
+        <ChargeModal
+          {...showModal}
+          dismiss={dismiss}
+          refetchDashboard={refetchDashboard}
+        />
+      ) : null}
       <Menu>
         <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
           <svg
@@ -239,9 +218,10 @@ function ActionsMenu({
         <MenuList>
           <MenuItem
             onSelect={() => {
-              setShowConfirm({
+              setShowModal({
                 leaseId,
                 amount: rent,
+                type: 'payment',
                 custom: false,
                 property,
                 tenant,
@@ -255,9 +235,10 @@ function ActionsMenu({
           {balance !== '$0.00' && !balance.startsWith('-') && (
             <MenuItem
               onSelect={() => {
-                setShowConfirm({
+                setShowModal({
                   leaseId,
                   amount: balance,
+                  type: 'payment',
                   custom: false,
                   property,
                   tenant,
@@ -271,9 +252,10 @@ function ActionsMenu({
           )}
           <MenuItem
             onSelect={() => {
-              setShowConfirm({
+              setShowModal({
                 leaseId,
                 custom: true,
+                type: 'payment',
                 property,
                 tenant,
                 unit,
@@ -283,8 +265,20 @@ function ActionsMenu({
           >
             Pay custom...
           </MenuItem>
-          <MenuItem onSelect={() => alert('Pay custom')}>
-            Add charge...
+          <MenuItem
+            onSelect={() => {
+              setShowModal({
+                leaseId,
+                custom: true,
+                type: 'charge',
+                property,
+                tenant,
+                unit,
+                url: '/api/polka/routes/transactions/charge_custom',
+              })
+            }}
+          >
+            Charge...
           </MenuItem>
         </MenuList>
       </Menu>
