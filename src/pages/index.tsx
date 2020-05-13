@@ -103,7 +103,10 @@ export default function Index() {
                 {expanded === lease.id ? (
                   <tr key="expanded" className="bg-gray-700 odd:bg-opacity-75">
                     <td className="expanded-cell" colSpan={colSpan}>
-                      <Transactions leaseId={expanded} />
+                      <Transactions
+                        leaseId={expanded}
+                        refetchDashboard={refetch}
+                      />
                     </td>
                   </tr>
                 ) : null}

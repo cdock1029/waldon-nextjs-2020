@@ -9,8 +9,14 @@ function fetchTxns(key, leaseId: number) {
 }
 
 const minRows = 2
-export function Transactions({ leaseId }: { leaseId: number }) {
-  const { status, data, error } = useQuery(['transactions', leaseId], fetchTxns)
+export function Transactions({
+  leaseId,
+  refetchDashboard,
+}: {
+  leaseId: number
+  refetchDashboard: () => Promise<any>
+}) {
+  const { data, error } = useQuery(['transactions', leaseId], fetchTxns)
 
   if (error) {
     return <div className="text-red-300">{(error as Error).message}</div>
@@ -43,7 +49,11 @@ export function Transactions({ leaseId }: { leaseId: number }) {
                   </td>
                   <td align="left">{t.notes}</td>
                   <td align="center">
-                    <ActionsMenu leaseId={leaseId} transactionId={t.id} />
+                    <ActionsMenu
+                      leaseId={leaseId}
+                      transactionId={t.id}
+                      refetchDashboard={refetchDashboard}
+                    />
                   </td>
                 </tr>
               ))
@@ -81,7 +91,7 @@ function deleteTransaction(transactionId: number) {
   })
 }
 
-function ActionsMenu({ transactionId, leaseId }) {
+function ActionsMenu({ transactionId, leaseId, refetchDashboard }) {
   const [mutate] = useMutation(deleteTransaction)
   return (
     <Menu>
@@ -121,9 +131,12 @@ function ActionsMenu({ transactionId, leaseId }) {
             if (confirm('Confirm: do you want to delete transation?')) {
               await mutate(transactionId, {
                 async onSuccess() {
-                  await queryCache.refetchQueries(['transactions', leaseId], {
-                    exact: true,
-                  })
+                  await Promise.all([
+                    refetchDashboard(),
+                    queryCache.refetchQueries(['transactions', leaseId], {
+                      exact: true,
+                    }),
+                  ])
                 },
               })
             }
