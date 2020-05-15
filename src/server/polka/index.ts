@@ -1,5 +1,5 @@
 import polka from 'polka'
-import { ironSession } from 'next-iron-session'
+import { session } from 'server'
 import { authRoutes } from './auth'
 import { propertyRoutes } from './properties'
 import { unitRoutes } from './units'
@@ -18,16 +18,6 @@ async function authCheck(req, res, next) {
     res.status(401).json({ error: 'not authorized', redirect: '/login' })
   }
 }
-
-const session = ironSession({
-  cookieName: 'wpm-session',
-  password: process.env.SESSION_SECRET!,
-  cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/api/',
-  },
-})
 
 const apiRoutes = polka()
   .use(authCheck)

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, queryCache } from 'react-query'
 import { fetchGuard, format } from 'client'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
+import { useState } from 'react'
 
 function fetchTxns(key, leaseId: number) {
   return fetchGuard<Transaction[]>(
@@ -50,8 +51,7 @@ export function Transactions({
                   <td align="left">{t.notes}</td>
                   <td align="center">
                     <ActionsMenu
-                      leaseId={leaseId}
-                      transactionId={t.id}
+                      transaction={t}
                       refetchDashboard={refetchDashboard}
                     />
                   </td>
@@ -91,7 +91,13 @@ function deleteTransaction(transactionId: number) {
   })
 }
 
-function ActionsMenu({ transactionId, leaseId, refetchDashboard }) {
+function ActionsMenu({
+  transaction,
+  refetchDashboard,
+}: {
+  refetchDashboard: () => void
+  transaction: Transaction
+}) {
   const [mutate] = useMutation(deleteTransaction)
   return (
     <Menu>
@@ -129,13 +135,16 @@ function ActionsMenu({ transactionId, leaseId, refetchDashboard }) {
         <MenuItem
           onSelect={async () => {
             if (confirm('Confirm: do you want to delete transation?')) {
-              await mutate(transactionId, {
+              await mutate(transaction.id, {
                 async onSuccess() {
                   await Promise.all([
                     refetchDashboard(),
-                    queryCache.refetchQueries(['transactions', leaseId], {
-                      exact: true,
-                    }),
+                    queryCache.refetchQueries(
+                      ['transactions', transaction.lease_id],
+                      {
+                        exact: true,
+                      }
+                    ),
                   ])
                 },
               })

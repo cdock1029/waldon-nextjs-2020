@@ -157,7 +157,6 @@ export function PaymentModal(props: PaymentConfirmProps) {
           </button>{' '}
         </div>
       </AlertDialog>
-      )}
       <style jsx>{`
         :global([data-reach-dialog-content]) {
           max-width: 28rem;

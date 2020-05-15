@@ -45,6 +45,7 @@ type Lease = {
 
 type Transaction = {
   id: number
+  lease_id: number
   created_at: string
   updated_at: string
 

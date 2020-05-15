@@ -188,7 +188,6 @@ export function ChargeModal(props: ChargeModalProps) {
           </button>{' '}
         </div>
       </AlertDialog>
-      )}
       <style jsx>{`
         :global([data-reach-dialog-content]) {
           max-width: 32rem;

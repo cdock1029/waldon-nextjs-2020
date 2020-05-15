@@ -37,6 +37,11 @@ export default function Nav() {
             Tenants
           </a>
         </Link>
+        <Link href="/info">
+          <a className="mr-8 p-2 text-teal-400 font-bold text-teal-100 no-underline">
+            Info
+          </a>
+        </Link>
 
         <div className="ml-auto flex items-center">
           <PropertySelect />

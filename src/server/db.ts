@@ -1,10 +1,10 @@
 import knex from 'knex'
-// import { types } from 'pg'
-// import { builtins } from 'pg-types'
+import { types } from 'pg'
+import { builtins } from 'pg-types'
 
-// types.setTypeParser(builtins.DATE, (val) => {
-//   return val
-// })
+types.setTypeParser(builtins.TIMESTAMP, (val) => {
+  return val
+})
 
 let globalAny: any = global
 
