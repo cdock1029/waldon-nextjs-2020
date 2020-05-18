@@ -8,7 +8,7 @@ html {
   box-sizing: inherit;
 }
 body {
-  @apply m-0 font-sans bg-gray-800 text-teal-200 overflow-hidden;
+  @apply m-0 overflow-hidden font-sans text-teal-200 bg-gray-800;
 }
 a {
   @apply text-teal-300;
@@ -17,12 +17,12 @@ a:visited {
   @apply text-teal-400;
 }
 button {
-  @apply outline-none cursor-pointer shadow-md py-1 px-4 bg-gray-700 text-teal-200 border-solid border-teal-200 border-opacity-25 rounded-sm;
+  @apply px-4 py-1 text-teal-200 bg-gray-700 border-teal-200 border-opacity-25 border-solid rounded-sm shadow-md outline-none cursor-pointer;
   border-width: 1px;
   font-size: 0.84rem;
 }
 button:hover {
-  @apply bg-gray-800 shadow-lg text-teal-100;
+  @apply text-teal-100 bg-gray-800 shadow-lg;
 }
 button:active {
   @apply bg-gray-900 shadow-lg;
@@ -31,7 +31,7 @@ button:disabled {
   @apply opacity-50 cursor-not-allowed;
 }
 input {
-  @apply text-lg p-1;
+  @apply p-1 text-lg;
 }
 
 @import '~@reach/menu-button/styles.css';
@@ -43,6 +43,14 @@ input {
 @import '~@reach/dialog/styles.css';
 [data-reach-dialog-content] {
   @apply bg-gray-600;
+}
+
+[data-reach-dialog-content] {
+  max-width: 32rem;
+  width: 100%;
+}
+[data-reach-dialog-overlay] {
+  backdrop-filter: blur(3px);
 }
 
 @tailwind components;

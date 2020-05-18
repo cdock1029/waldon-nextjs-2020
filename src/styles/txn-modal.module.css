@@ -1,0 +1,20 @@
+.txnModal label {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1.25rem;
+}
+.txnModal :global(label.radio),
+.txnModal :global(label.radio-wrap) {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+}
+.txnModal :global(label.radio input) {
+  margin-right: 0.5rem;
+}
+.txnModal :global(label p) {
+  margin: 0;
+  font-size: 1.25rem;
+}

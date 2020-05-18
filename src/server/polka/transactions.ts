@@ -25,9 +25,9 @@ export const transactionsRoutes = polka()
       query = `select wpm_pay_balance(${leaseId});`
     }
     await db.schema.raw(query)
-    return res.status(200).json({ data: 'success' })
+    return res.status(201).json({ data: 'success' })
   })
-  .post('/pay_rent', async function payBalance(req, res) {
+  .post('/pay_rent', async function payRent(req, res) {
     const { leaseId, date } = req.body
     if (typeof leaseId !== 'number') {
       return res.status(422).json({ error: 'Invalid argument' })
@@ -39,9 +39,9 @@ export const transactionsRoutes = polka()
       query = `select wpm_pay_rent(${leaseId});`
     }
     await db.schema.raw(query)
-    return res.status(200).json({ data: 'success' })
+    return res.status(201).json({ data: 'success' })
   })
-  .post('/pay_custom', async function payBalance(req, res) {
+  .post('/pay_custom', async function payCustom(req, res) {
     const { leaseId, amount, date } = req.body
     if (
       typeof leaseId !== 'number' ||
@@ -57,9 +57,9 @@ export const transactionsRoutes = polka()
       date,
       notes: 'custom payment',
     })
-    return res.status(200).json({ data: 'success' })
+    return res.status(201).json({ data: 'success' })
   })
-  .post('/charge_custom', async function payBalance(req, res) {
+  .post('/charge_custom', async function chargeCustom(req, res) {
     const { leaseId, amount, date, type } = req.body
     if (
       typeof leaseId !== 'number' ||
@@ -77,7 +77,7 @@ export const transactionsRoutes = polka()
       // @todo: allow transacton notes to be passed by user
       notes: 'charge applied',
     })
-    return res.status(200).json({ data: 'success' })
+    return res.status(201).json({ data: 'success' })
   })
   .delete('/:transactionId', async function deleteTransaction(req, res) {
     try {
@@ -89,12 +89,29 @@ export const transactionsRoutes = polka()
       return res.status(400).json({ error: 'Invalid request' })
     }
   })
+  .put('/transaction_update/:id', async function txnUpdate(req, res) {
+    const id = parseInt(req.params.id)
+    const { amount, date, type } = req.body
+    if (
+      typeof amount !== 'string' ||
+      (type !== 'rent' && type !== 'late_fee' && type !== 'payment') ||
+      !amount.match(MONEY_REGEX)
+    ) {
+      return res.status(422).json({ error: 'Invalid argument' })
+    }
+    let updateParams: any = {
+      // @todo: fix this negative sign checking
+      amount: type === 'payment' ? `-${amount}` : amount,
+      notes: `payment updated ${new Date().toLocaleDateString()}`,
+    }
+    if (date) {
+      updateParams.date = date
+    }
+    await db('transaction').where('id', '=', id).update(updateParams)
+    return res.status(200).json({ data: 'success' })
+  })
 
 export const Transactions = {
-  // async list({ limit = 10, orderBy = 'name' } = {}) {
-  //   return db<Unit>('units').select('*').orderBy(orderBy).limit(limit)
-  // },
-
   async listForLease({
     leaseId,
     limit = 10,

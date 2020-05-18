@@ -70,41 +70,41 @@ export function NewTenant() {
   return (
     <div>
       <button onClick={open}>New tenant</button>
-      {showDialog && (
+      {showDialog ? (
         <AlertDialog
           onDismiss={close}
           leastDestructiveRef={cancelRef}
-          className="p-8 shadow-md rounded"
+          className="p-8 rounded shadow-md"
         >
           <AlertDialogLabel className="pb-8">
             <h2 className="m-0">New tenant</h2>
           </AlertDialogLabel>
           <AlertDialogDescription className="pb-8">
             <form onSubmit={saveTenant} ref={formRef}>
-              <label>
+              <label className="flex flex-col mb-4">
                 First name
                 <input name="first_name" required placeholder="First name" />
               </label>
 
-              <label>
+              <label className="flex flex-col mb-4">
                 Middle name
                 <input name="middle_name" placeholder="Middle name" />
               </label>
-              <label>
+              <label className="flex flex-col mb-4">
                 Last name
                 <input name="last_name" required placeholder="Last name" />
               </label>
-              <label>
+              <label className="flex flex-col mb-4">
                 Suffix
                 <input name="suffix" placeholder="Suffix" />
               </label>
-              <label>
+              <label className="flex flex-col mb-4">
                 Email
                 <input name="email" type="email" placeholder="Email" />
               </label>
             </form>
           </AlertDialogDescription>
-          <div className="flex justify-end items-center">
+          <div className="flex items-center justify-end">
             <button ref={cancelRef} onClick={close}>
               Cancel
             </button>
@@ -113,21 +113,7 @@ export function NewTenant() {
             </button>{' '}
           </div>
         </AlertDialog>
-      )}
-      <style jsx>{`
-        :global([data-reach-dialog-content]) {
-          max-width: 28rem;
-          width: 100%;
-        }
-        :glboal([data-reach-dialog-overlay]) {
-          backdrop-filter: blur(3px);
-        }
-        label {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 1rem;
-        }
-      `}</style>
+      ) : null}
     </div>
   )
 }

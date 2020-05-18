@@ -1,3 +1,4 @@
+import styles from 'styles/dashboard.module.css'
 import { useState, Fragment } from 'react'
 import { useQuery } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
@@ -34,15 +35,15 @@ export default function Index() {
     <>
       {status === 'loading' && <Loading />}
       <div className="py-8">
-        <h1 className="text-3xl m-0">
+        <h1 className="m-0 text-3xl">
           {property ? property.name : <span>&nbsp;</span>}
         </h1>
-        <small className="opacity-75 font-semibold uppercase">
+        <small className="font-semibold uppercase opacity-75">
           Active leases
         </small>
       </div>
-      <div className="shadow-lg">
-        <table className="table-auto text-sm w-full border-collapse">
+      <div className={`shadow-lg ${styles.dash}`}>
+        <table className="w-full text-sm border-collapse table-auto">
           <thead className="uppercase">
             <tr className="bg-gray-700">
               <th></th>
@@ -64,7 +65,7 @@ export default function Index() {
                     <button
                       onClick={() => toggleExpanded(lease.id)}
                       tabIndex={-1}
-                      className="text-lg h-8 flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none"
+                      className="flex items-center h-8 px-1 text-lg bg-transparent border-none shadow-none hover:bg-transparent hover:shadow-none"
                     >
                       {expanded === lease.id ? (
                         <span>&#9650;</span>
@@ -131,24 +132,6 @@ export default function Index() {
           </tbody>
         </table>
       </div>
-      <style jsx>{`
-        td,
-        th {
-          padding: 1.5rem 1rem;
-        }
-        td.expanded-cell {
-          padding: 2.5rem 2rem 3rem 2rem;
-        }
-        }
-        td.tenant {
-          max-width: calc(15vw);
-        }
-        td.tenant > div {
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-      `}</style>
     </>
   )
 }
@@ -171,16 +154,7 @@ function ActionsMenu({
   tenant,
   refetchDashboard,
 }: LeaseActionProps) {
-  const [showModal, setShowModal] = useState<{
-    url: string
-    amount?: string
-    type: 'payment' | 'charge'
-    property: string
-    unit: string
-    tenant: string[]
-    custom: boolean
-    leaseId: number
-  } | null>(null)
+  const [showModal, setShowModal] = useState<TransactionModalProps | null>(null)
   function dismiss() {
     setShowModal(null)
   }
@@ -190,17 +164,17 @@ function ActionsMenu({
         <PaymentModal
           {...showModal}
           dismiss={dismiss}
-          refetchDashboard={refetchDashboard}
+          refetch={refetchDashboard}
         />
       ) : showModal && showModal.type === 'charge' ? (
         <ChargeModal
           {...showModal}
           dismiss={dismiss}
-          refetchDashboard={refetchDashboard}
+          refetch={refetchDashboard}
         />
       ) : null}
       <Menu>
-        <MenuButton className="flex items-center px-1 border-none shadow-none bg-transparent hover:bg-transparent hover:shadow-none">
+        <MenuButton className="flex items-center px-1 bg-transparent border-none shadow-none hover:bg-transparent hover:shadow-none">
           <svg
             viewBox="0 0 24 24"
             width="18"

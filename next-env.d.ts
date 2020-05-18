@@ -51,8 +51,19 @@ type Transaction = {
 
   date: string
   amount: string
-  type: string
+  type: 'payment' | 'rent' | 'late_fee'
   notes?: string
 }
 
 type DashboardLease = Lease & { unit: string; tenant: string }
+
+type TransactionModalProps = {
+  url: string
+  amount?: string
+  type: 'payment' | 'charge'
+  property: string
+  unit: string
+  tenant: string[]
+  custom: boolean
+  leaseId: number
+}

@@ -6,12 +6,12 @@
 }
 .ldsRipple div {
   position: absolute;
-  border: 4px solid #000;
+  border: 4px solid rgb(22, 189, 202);
   opacity: 1;
   border-radius: 50%;
   animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
-.ldsRipple div:nth-child(2) {
+.ldsRipple :global(div:nth-child(2)) {
   animation-delay: -0.5s;
 }
 @keyframes lds-ripple {
@@ -29,4 +29,11 @@
     height: 72px;
     opacity: 0;
   }
+}
+
+.spinner {
+  z-index: 40;
+  position: fixed;
+  top: 4.5rem;
+  left: 50%;
 }

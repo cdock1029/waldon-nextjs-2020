@@ -1,0 +1,15 @@
+.dash td,
+.dash th {
+  padding: 1.5rem 1rem;
+}
+.dash :global(td.expanded-cell) {
+  padding: 2.5rem 2rem 3rem 2rem;
+}
+.dash :global(td.tenant) {
+  max-width: calc(15vw);
+}
+.dash :global(td.tenant > div) {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

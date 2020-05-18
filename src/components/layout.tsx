@@ -1,20 +1,17 @@
+import styles from 'styles/layout.module.css'
 import Header from './header'
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="layout h-screen max-h-full flex flex-col px-8 pt-15">
+    <div
+      className={`flex flex-col h-screen max-h-full px-8 ${styles.layout} pt-15`}
+    >
       <Header />
-      <main className="flex-1 relative max-w-screen-xl w-full mx-auto">
+      <main className="relative flex-1 w-full max-w-screen-xl mx-auto">
         {children}
       </main>
-      <style jsx>{`
-        .layout {
-          overflow-y: overlay;
-          overflow-x: hidden;
-        }
-      `}</style>
       <footer className="py-16">
-        <div className="max-w-screen-xl w-full mx-auto">
+        <div className="w-full max-w-screen-xl mx-auto">
           <img src="/business.svg" alt="building" height="32" width="32" />
         </div>
       </footer>

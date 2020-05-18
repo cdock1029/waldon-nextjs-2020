@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
 import styles from 'styles/loading.module.css'
+import { useEffect, useRef } from 'react'
 
 export function Loading() {
   const ref = useRef<HTMLDivElement>(null)
@@ -17,18 +17,11 @@ export function Loading() {
     }
   }, [])
   return (
-    <div className="loading-spinner" key="loading-spinner" hidden ref={ref}>
+    <div className={styles.spinner} key="loading-spinner" hidden ref={ref}>
       <div className={styles.ldsRipple}>
         <div></div>
         <div></div>
       </div>
-      <style jsx>{`
-        & {
-          position: fixed;
-          top: 0rem;
-          left: 50%;
-        }
-      `}</style>
     </div>
   )
 }

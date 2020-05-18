@@ -1,3 +1,4 @@
+import styles from 'styles/txn-modal.module.css'
 import { useState, useRef } from 'react'
 import {
   AlertDialog,
@@ -8,6 +9,7 @@ import { useMutation, queryCache } from 'react-query'
 import formatDate from 'intl-dateformat'
 
 type ChargeModalProps = {
+  id?: number
   leaseId: number
   url: string
   tenant: string[]
@@ -15,7 +17,7 @@ type ChargeModalProps = {
   property: string
   custom: boolean
   unit: string
-  refetchDashboard: () => Promise<any>
+  refetch: () => Promise<any>
   dismiss: () => void
 }
 
@@ -54,11 +56,7 @@ export function ChargeModal(props: ChargeModalProps) {
     const type = (e.target as any).type.value
     const dateVal = dateRef.current?.valueAsDate!
 
-    console.log('initial', dateVal.toString(), '\n ISO:', dateVal.toISOString())
-
     dateVal.setMinutes(dateVal.getMinutes() + dateVal.getTimezoneOffset())
-
-    console.log('updated', dateVal.toString(), '\n ISO:', dateVal.toISOString())
 
     let chargeProps: MakeChargeProps = {
       leaseId: props.leaseId,
@@ -78,7 +76,7 @@ export function ChargeModal(props: ChargeModalProps) {
             alert(result.error)
           } else {
             await Promise.all([
-              props.refetchDashboard(),
+              props.refetch(),
               queryCache.refetchQueries(['transactions', props.leaseId], {
                 exact: true,
               }),
@@ -102,13 +100,17 @@ export function ChargeModal(props: ChargeModalProps) {
         key={JSON.stringify(props)}
         onDismiss={props.dismiss}
         leastDestructiveRef={cancelRef}
-        className="p-8 shadow-md rounded"
+        className="p-8 rounded shadow-md"
       >
         <AlertDialogLabel className="pb-8">
           <h2 className="m-0">Confirm charge</h2>
         </AlertDialogLabel>
         <AlertDialogDescription className="pb-8">
-          <form onSubmit={submitPayment} ref={formRef}>
+          <form
+            onSubmit={submitPayment}
+            ref={formRef}
+            className={styles.txnModal}
+          >
             <div className="flex justify-between">
               <label>
                 <small>{props.property}</small>
@@ -125,7 +127,7 @@ export function ChargeModal(props: ChargeModalProps) {
             <div className="inline-flex">
               <label>
                 Charge type
-                <div className="inline-flex justify-start items-center">
+                <div className="inline-flex items-center justify-start">
                   <label className="radio" htmlFor="rent">
                     <input
                       required
@@ -154,7 +156,6 @@ export function ChargeModal(props: ChargeModalProps) {
             <label>
               Amount $
               <div className="flex items-center">
-                {/* <div className="pr-4">$</div> */}
                 <input
                   disabled={!props.custom}
                   className="flex-1"
@@ -179,7 +180,7 @@ export function ChargeModal(props: ChargeModalProps) {
             </label>
           </form>
         </AlertDialogDescription>
-        <div className="flex justify-end items-center">
+        <div className="flex items-center justify-end">
           <button ref={cancelRef} onClick={props.dismiss}>
             Cancel
           </button>
@@ -188,35 +189,6 @@ export function ChargeModal(props: ChargeModalProps) {
           </button>{' '}
         </div>
       </AlertDialog>
-      <style jsx>{`
-        :global([data-reach-dialog-content]) {
-          max-width: 32rem;
-          width: 100%;
-        }
-        :glboal([data-reach-dialog-overlay]) {
-          backdrop-filter: blur(3px);
-        }
-        label {
-          display: flex;
-          flex-direction: column;
-          padding-bottom: 1.25rem;
-        }
-        label.radio,
-        label.radio-wrap {
-          display: inline-flex;
-          flex-direction: row;
-          align-items: center;
-          margin-right: 1rem;
-          margin-top: 0.5rem;
-        }
-        label.radio input {
-          margin-right: 0.5rem;
-        }
-        label p {
-          margin: 0;
-          font-size: 1.25rem;
-        }
-      `}</style>
     </div>
   )
 }

@@ -5,86 +5,75 @@ import {
   AlertDialogDescription,
   AlertDialogLabel,
 } from '@reach/alert-dialog'
-import { useMutation, queryCache } from 'react-query'
+import { useMutation } from 'react-query'
 import formatDate from 'intl-dateformat'
 
-type PaymentConfirmProps = {
-  leaseId: number
-  url: string
-  tenant: string[]
-  amount?: string
-  property: string
-  custom: boolean
-  unit: string
+type UpdateModalProps = {
+  transaction: Transaction
   refetch: () => Promise<any>
   dismiss: () => void
 }
 
-type MakePaymentProps = {
-  url: string
-  leaseId: number
+type MakeUpdateProps = {
+  id: number
   date?: string
-  amount?: string
+  amount: string
+  type: string
 }
 
-async function makePayment({ url, ...rest }: MakePaymentProps) {
+async function makeUpdate(props: MakeUpdateProps) {
+  const url = `/api/polka/routes/transactions/transaction_update/${props.id}`
   return fetch(url, {
-    method: 'POST',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(rest),
+    body: JSON.stringify(props),
     credentials: 'same-origin',
   })
 }
 
-export function PaymentModal(props: PaymentConfirmProps) {
+export function UpdateModal(props: UpdateModalProps) {
   const cancelRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const dateRef = useRef<HTMLInputElement>(null)
 
-  const [paymentAmount, setPaymentAmount] = useState(props.amount)
+  const [transactionAmount, setTransactionAmount] = useState(
+    props.transaction.amount.replace(/[-\$]/g, '')
+  )
 
-  const [mutate] = useMutation(makePayment)
+  const [mutate] = useMutation(makeUpdate)
 
   function requestSubmit() {
     formRef.current?.requestSubmit()
   }
-  async function submitPayment(e: React.FormEvent) {
+  async function submitUpdate(e: React.FormEvent) {
     e.preventDefault()
 
     const dateVal = dateRef.current?.valueAsDate!
 
-    console.log('initial', dateVal.toString(), '\n ISO:', dateVal.toISOString())
-
     dateVal.setMinutes(dateVal.getMinutes() + dateVal.getTimezoneOffset())
 
-    console.log('updated', dateVal.toString(), '\n ISO:', dateVal.toISOString())
-
-    let paymentProps: MakePaymentProps = {
-      leaseId: props.leaseId,
-      amount: paymentAmount,
+    let updateProps: MakeUpdateProps = {
+      id: props.transaction.id,
+      type: props.transaction.type,
+      amount: transactionAmount,
       date: dateVal.toISOString(),
-      url: props.url,
     }
 
-    console.log('submit', paymentProps)
+    console.log('submit', updateProps)
 
     try {
-      await mutate(paymentProps, {
+      await mutate(updateProps, {
         async onSuccess(response) {
           const result = await response.json()
           if (result.error) {
             alert(result.error)
           } else {
-            await Promise.all([
-              props.refetch(),
-              queryCache.refetchQueries(['transactions', props.leaseId], {
-                exact: true,
-              }),
-            ])
+            await props.refetch()
             props.dismiss()
           }
         },
         onError(e: any) {
+          console.log('onError')
           alert(e.message)
         },
       })
@@ -102,25 +91,23 @@ export function PaymentModal(props: PaymentConfirmProps) {
         className="p-8 rounded shadow-md"
       >
         <AlertDialogLabel className="pb-8">
-          <h2 className="m-0">Confirm payment</h2>
+          <h2 className="m-0">Confirm charge</h2>
         </AlertDialogLabel>
         <AlertDialogDescription className="pb-8">
           <form
-            onSubmit={submitPayment}
+            onSubmit={submitUpdate}
             ref={formRef}
             className={styles.txnModal}
           >
-            <div className="flex justify-between">
+            <div className="inline-flex">
               <label>
-                {props.property}
-                <p>{props.unit}</p>
-              </label>
-
-              <label>
-                Tenant
-                {props.tenant.map((t) => (
-                  <p key={t}>{t}</p>
-                ))}
+                Transaction type
+                <input
+                  disabled
+                  type="text"
+                  name="type"
+                  value={props.transaction.type.toUpperCase()}
+                />
               </label>
             </div>
 
@@ -128,12 +115,11 @@ export function PaymentModal(props: PaymentConfirmProps) {
               Amount $
               <div className="flex items-center">
                 <input
-                  disabled={!props.custom}
                   className="flex-1"
                   required
-                  placeholder="Enter amount"
-                  value={paymentAmount || ''}
-                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  placeholder="Enter transaction amount"
+                  value={transactionAmount}
+                  onChange={(e) => setTransactionAmount(e.target.value)}
                   pattern="^[0-9]+(\.[0-9]{1,2})?$"
                 />
               </div>
@@ -142,7 +128,10 @@ export function PaymentModal(props: PaymentConfirmProps) {
             <label>
               Date
               <input
-                defaultValue={formatDate(new Date(), 'YYYY-MM-DD')}
+                defaultValue={formatDate(
+                  new Date(props.transaction.date),
+                  'YYYY-MM-DD'
+                )}
                 ref={dateRef}
                 type="date"
                 name="date"
@@ -156,7 +145,7 @@ export function PaymentModal(props: PaymentConfirmProps) {
             Cancel
           </button>
           <button className="ml-4" onClick={requestSubmit}>
-            Confirm
+            Update transaction
           </button>{' '}
         </div>
       </AlertDialog>
