@@ -24,7 +24,7 @@
     "polka": "^1.0.0-next.11",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-query": "^1.4.4",
+    "react-query": "^1.5.2",
     "react-table": "^7.0.6",
     "react-use": "^14.2.0",
     "use-immer": "^0.4.0"
