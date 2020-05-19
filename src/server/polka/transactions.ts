@@ -102,7 +102,7 @@ export const transactionsRoutes = polka()
     let updateParams: any = {
       // @todo: fix this negative sign checking
       amount: type === 'payment' ? `-${amount}` : amount,
-      notes: `payment updated ${new Date().toLocaleDateString()}`,
+      notes: `transaction updated ${new Date().toLocaleDateString()}`,
     }
     if (date) {
       updateParams.date = date
