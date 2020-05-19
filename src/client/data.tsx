@@ -63,7 +63,7 @@ export function PropertyProvider({ children }: { children: ReactNode }) {
     null
   )
   const [value, updateValue] = useImmer<PropertyContext>({
-    property: storedProperty,
+    property: storedProperty!,
     updateProperty: (newProperty: Property) => {
       setStoredProperty(newProperty)
       updateValue((draft) => {
