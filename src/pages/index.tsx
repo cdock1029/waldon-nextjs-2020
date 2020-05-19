@@ -4,6 +4,7 @@ import { useQuery } from 'react-query'
 import { format, useSelectedProperty, fetchGuard } from 'client'
 import { Loading, Transactions, PaymentModal, ChargeModal } from 'components'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
+import { db } from 'server'
 
 async function fetchData(key, propertyId: number) {
   return fetchGuard<DashboardLease[]>(
@@ -57,7 +58,7 @@ export default function Index() {
               <th align="center">Actions</th>
             </tr>
           </thead>
-          <tbody className="font-mono">
+          <tbody>
             {data.map((lease) => (
               <Fragment key={lease.id}>
                 <tr className="bg-gray-700 odd:bg-opacity-75">
@@ -261,4 +262,12 @@ function ActionsMenu({
       </Menu>
     </>
   )
+}
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      properties: await db('property').select().orderBy('name'),
+    },
+  }
 }

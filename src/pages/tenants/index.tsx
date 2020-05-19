@@ -3,6 +3,7 @@ import { fetchGuard } from 'client'
 import { NewTenant } from 'components'
 import Link from 'next/link'
 import Head from 'next/head'
+import { db } from 'server'
 
 async function fetchTenants() {
   return fetchGuard<Tenant[]>('/api/polka/routes/tenants')
@@ -21,7 +22,7 @@ export default function Tenants() {
           crossOrigin="anonymous"
         ></link>
       </Head>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h1 className="py-8 m-0">Tenants</h1>
         <NewTenant />
       </div>
@@ -35,4 +36,12 @@ export default function Tenants() {
         ))}
     </>
   )
+}
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      properties: await db('property').select().orderBy('name'),
+    },
+  }
 }

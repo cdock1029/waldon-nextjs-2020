@@ -1,3 +1,5 @@
+@import url('https://fonts.xz.style/serve/inter.css');
+
 html {
   font-size: 18px;
   box-sizing: border-box;
@@ -32,6 +34,12 @@ button:disabled {
 }
 input {
   @apply p-1 text-lg;
+}
+td {
+  @apply font-mono;
+}
+th {
+  @apply font-sans;
 }
 
 @import '~@reach/menu-button/styles.css';

@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { Properties as PropertiesData } from 'server/polka/properties'
 
 import type { GetStaticProps } from 'next'
+import { db } from 'server'
 
 export default function Properties({ properties }: { properties: Property[] }) {
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h1 className="py-8 m-0">Properties</h1>
       </div>
       {properties.map((p) => (
@@ -25,7 +25,7 @@ export const getStaticProps: GetStaticProps<{
 }> = async (context) => {
   return {
     props: {
-      properties: await PropertiesData.list(),
+      properties: await db('property').select().orderBy('name'),
     },
   }
 }

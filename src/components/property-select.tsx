@@ -1,9 +1,8 @@
-import { useProperties, useSelectedProperty } from 'client'
+import { useSelectedProperty } from 'client'
 import { Menu, MenuButton, MenuList, MenuItem } from '@reach/menu-button'
 
-function PropertySelect() {
+function PropertySelect({ properties }: { properties: Property[] }) {
   const { property, updateProperty } = useSelectedProperty()
-  const { data } = useProperties()
   return (
     <Menu>
       <MenuButton>
@@ -16,14 +15,12 @@ function PropertySelect() {
             Clear selection
           </MenuItem>
         ) : null}
-        {data &&
-          data.map((p) => {
-            return (
-              <MenuItem onSelect={() => updateProperty(p)} key={p.id}>
-                {p.name}
-              </MenuItem>
-            )
-          })}
+        {properties &&
+          properties.map((p) => (
+            <MenuItem onSelect={() => updateProperty(p)} key={p.id}>
+              {p.name}
+            </MenuItem>
+          ))}
       </MenuList>
     </Menu>
   )

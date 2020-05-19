@@ -33,7 +33,7 @@ export function Transactions({
 
   return (
     <>
-      <h2 className="py-4 m-0 text-2xl opacity-75">Transactions</h2>
+      <h2 className="py-4 m-0 font-sans text-2xl opacity-75">Transactions</h2>
       <div className={`p-4 bg-gray-800 rounded shadow-md ${styles.txns}`}>
         <table className="w-full">
           <thead className="uppercase opacity-50">

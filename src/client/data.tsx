@@ -9,7 +9,6 @@ import Router from 'next/router'
 import formatDate from 'intl-dateformat'
 import { useImmer } from 'use-immer'
 import { useLocalStorage } from 'react-use'
-import { useQuery } from 'react-query'
 
 type Result<T> = { data?: T; redirect?: boolean; error?: string }
 export async function fetchGuard<T>(requestInfo: RequestInfo) {
@@ -38,14 +37,6 @@ export async function fetchGuard<T>(requestInfo: RequestInfo) {
     })
   promise.cancel = controller.abort
   return promise
-}
-
-async function fetchProperties() {
-  return fetchGuard<Property[]>('/api/polka/routes/properties')
-}
-
-export function useProperties() {
-  return useQuery('properties', fetchProperties)
 }
 
 type PropertyContext = {

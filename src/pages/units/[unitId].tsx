@@ -1,6 +1,8 @@
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 import { fetchGuard } from 'client'
+import { db } from 'server'
+import type { GetStaticPaths } from 'next'
 
 async function fetchUnit(
   key,
@@ -17,8 +19,23 @@ export default function Unit() {
   )
   return (
     <>
-      <h1 className="m-0 py-8 text-3xl">Unit: {unit ? unit.name : ''}</h1>
+      <h1 className="py-8 m-0 text-3xl">Unit: {unit ? unit.name : ''}</h1>
       <p>todo</p>
     </>
   )
+}
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      properties: await db('property').select().orderBy('name'),
+    },
+  }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  }
 }
