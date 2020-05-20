@@ -4,40 +4,18 @@ import type { NextApiResponse } from 'next'
 
 export const unitRoutes = polka()
   .get('/', async function units(req, res: NextApiResponse) {
+    const propertyId = parseInt(req.query.propertyId)
     res.status(200).json({
-      data: await Units.listForProperty({
-        propertyId: parseInt(req.query.propertyId),
-      }),
+      data: await db<Unit>('unit')
+        .select('*')
+        .where('property_id', '=', propertyId)
+        .orderBy('name')
+        .limit(10),
     })
   })
   .get('/:unitId', async function unit(req, res: NextApiResponse) {
+    const unitId = parseInt(req.params.unitId)
     res.status(200).json({
-      data: await Units.byId({ id: parseInt(req.params.unitId) }),
+      data: await db<Unit>('unit').first('*').where('id', '=', unitId),
     })
   })
-
-export const Units = {
-  async list({ limit = 10, orderBy = 'name' } = {}) {
-    return db<Unit>('unit').select('*').orderBy(orderBy).limit(limit)
-  },
-
-  async listForProperty({
-    propertyId,
-    limit = 10,
-    orderBy = 'name',
-  }: {
-    propertyId: number
-    limit?: number
-    orderBy?: string
-  }) {
-    return db<Unit>('unit')
-      .select('*')
-      .where('property_id', '=', propertyId)
-      .orderBy(orderBy)
-      .limit(limit)
-  },
-
-  async byId({ id }: { id: number }) {
-    return db<Unit>('unit').first('*').where('id', '=', id)
-  },
-}

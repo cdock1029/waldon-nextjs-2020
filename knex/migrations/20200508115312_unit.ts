@@ -14,7 +14,6 @@ exports.up = function (knex: Knex) {
   );
 
   CREATE TRIGGER wpm_unit_update BEFORE UPDATE ON unit FOR EACH ROW EXECUTE procedure wpm_set_current_timestamp_updated_at();
-  CREATE INDEX wpm_unit_property_name on unit (property_id, name);
 
   create index wpm_unit_created on unit(created_at desc);
   create index wpm_unit_updated on unit(updated_at desc);

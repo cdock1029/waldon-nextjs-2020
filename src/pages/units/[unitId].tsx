@@ -1,6 +1,6 @@
-import { useQuery } from 'react-query'
+import { useQuery, queryCache } from 'react-query'
 import { useRouter } from 'next/router'
-import { fetchGuard } from 'client'
+import { fetchGuard, useSelectedProperty } from 'client'
 import { db } from 'server'
 import type { GetStaticPaths } from 'next'
 
@@ -12,10 +12,21 @@ async function fetchUnit(
 }
 
 export default function Unit() {
+  const { property } = useSelectedProperty()
   const { query } = useRouter()
   const { data: unit } = useQuery(
-    query.unitId ? ['units', query.unitId] : null,
-    fetchUnit
+    property && query.unitId ? ['units', query.unitId] : null,
+    fetchUnit,
+    {
+      initialData: () => {
+        if (!property) return undefined
+        const arr = queryCache.getQueryData<Unit[]>(['units', property!.id])
+        const cached = arr?.find(
+          (u) => u.id === parseInt(query.unitId as string)
+        )
+        return cached
+      },
+    }
   )
   return (
     <>

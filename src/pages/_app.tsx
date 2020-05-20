@@ -1,5 +1,6 @@
 import 'styles/index.css'
 import Head from 'next/head'
+import { RecoilRoot } from 'recoil'
 import { PropertyProvider } from 'client'
 import { Layout } from 'components'
 
@@ -19,11 +20,13 @@ function MyApp({ Component, pageProps }) {
       {isLogin(Component) ? (
         <Component {...pageProps} />
       ) : (
-        <PropertyProvider>
-          <Layout properties={pageProps.properties}>
-            <Component {...pageProps} />
-          </Layout>
-        </PropertyProvider>
+        <RecoilRoot>
+          <PropertyProvider>
+            <Layout properties={pageProps.properties}>
+              <Component {...pageProps} />
+            </Layout>
+          </PropertyProvider>
+        </RecoilRoot>
       )}
     </>
   )

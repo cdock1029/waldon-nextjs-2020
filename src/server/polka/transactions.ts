@@ -1,15 +1,18 @@
 import polka from 'polka'
 import { db } from 'server'
-import type { NextApiResponse, NextApiRequest } from 'next'
+import type { NextApiResponse } from 'next'
 
 const MONEY_REGEX = /^[0-9]+(\.[0-9]{1,2})?$/
 
 export const transactionsRoutes = polka()
   .get('/', async function transactions(req, res: NextApiResponse) {
+    const leaseId = parseInt(req.query.leaseId)
     res.status(200).json({
-      data: await Transactions.listForLease({
-        leaseId: parseInt(req.query.leaseId),
-      }),
+      data: await db<Transaction>('transaction')
+        .select('*')
+        .where('lease_id', '=', leaseId)
+        .orderByRaw('date desc, created_at desc')
+        .limit(10),
     })
   })
   .post('/pay_balance', async function payBalance(req, res) {
@@ -110,25 +113,3 @@ export const transactionsRoutes = polka()
     await db('transaction').where('id', '=', id).update(updateParams)
     return res.status(200).json({ data: 'success' })
   })
-
-export const Transactions = {
-  async listForLease({
-    leaseId,
-    limit = 10,
-    orderBy = 'date desc, created_at desc',
-  }: {
-    leaseId: number
-    limit?: number
-    orderBy?: string
-  }) {
-    return db<Transaction>('transaction')
-      .select('*')
-      .where('lease_id', '=', leaseId)
-      .orderByRaw(orderBy)
-      .limit(limit)
-  },
-
-  // async byId({ id }: { id: number }) {
-  //   return db<Unit>('units').first('*').where('id', '=', id)
-  // },
-}

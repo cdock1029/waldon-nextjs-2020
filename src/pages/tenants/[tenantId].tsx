@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
+import { useQuery, queryCache } from 'react-query'
 import { fetchGuard } from 'client'
 import { db } from 'server'
 import type { GetStaticPaths } from 'next'
@@ -14,7 +14,14 @@ export default function Tenant(props) {
   } = useRouter()
   const { data: tenant } = useQuery(
     tenantId ? ['tenants', tenantId as string] : null,
-    fetchTenant
+    fetchTenant,
+    {
+      initialData: () => {
+        const arr = queryCache.getQueryData<Tenant[]>('tenants')
+        const cached = arr?.find((t) => t.id === parseInt(tenantId as string))
+        return cached
+      },
+    }
   )
 
   return (

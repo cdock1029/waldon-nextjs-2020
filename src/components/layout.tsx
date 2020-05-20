@@ -22,7 +22,7 @@ export function Layout({
   }
   return (
     <div
-      className={`flex flex-col h-screen max-h-full px-8 ${styles.layout} pt-15`}
+      className={`flex flex-col h-screen max-h-full px-8 ${styles.layout} py-15`}
     >
       <header className="fixed inset-x-0 top-0 z-20 flex items-center px-8 bg-gray-900 h-15">
         <nav className="flex items-center flex-1 max-w-screen-xl mx-auto text-lg">

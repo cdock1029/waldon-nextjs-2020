@@ -9,10 +9,7 @@ async function fetchUnits(key, propertyId: number) {
 
 function Units() {
   const { property } = useSelectedProperty()
-  const { data: units } = useQuery(
-    property && ['units', property.id],
-    fetchUnits
-  )
+  const { data: units } = useQuery(() => ['units', property!.id], fetchUnits)
   return (
     <>
       <div className="py-8">

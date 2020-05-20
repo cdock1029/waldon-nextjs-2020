@@ -222,7 +222,9 @@ function ActionsMenu({
           >
             Pay {rent}
           </MenuItem>
-          {balance !== '$0.00' && !balance.startsWith('-') && (
+          {balance !== '$0.00' &&
+          !balance.startsWith('-') &&
+          balance !== rent ? (
             <MenuItem
               onSelect={() => {
                 setShowModal({
@@ -239,7 +241,7 @@ function ActionsMenu({
             >
               Pay {balance}
             </MenuItem>
-          )}
+          ) : null}
           <MenuItem
             onSelect={() => {
               setShowModal({
