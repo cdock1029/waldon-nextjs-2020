@@ -1,7 +1,7 @@
 @import url('https://fonts.xz.style/serve/inter.css');
+@import url('https://fonts.xz.style/serve/liberation-mono.css');
 
 html {
-  font-size: 18px;
   box-sizing: border-box;
 }
 *,
@@ -36,10 +36,13 @@ input {
   @apply p-1 text-lg;
 }
 td {
-  @apply font-mono;
+  @apply font-sans text-teal-200 text-opacity-75;
+}
+td.boost {
+  @apply font-medium text-teal-200 text-opacity-100;
 }
 th {
-  @apply font-sans;
+  @apply font-sans font-semibold text-teal-200 text-opacity-50;
 }
 
 @import '~@reach/menu-button/styles.css';

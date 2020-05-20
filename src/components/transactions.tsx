@@ -33,7 +33,9 @@ export function Transactions({
 
   return (
     <>
-      <h2 className="py-4 m-0 font-sans text-2xl opacity-75">Transactions</h2>
+      <h2 className="py-4 m-0 font-sans text-2xl text-teal-200 text-opacity-75">
+        Transactions
+      </h2>
       <div className={`p-4 bg-gray-800 rounded shadow-md ${styles.txns}`}>
         <table className="w-full">
           <thead className="uppercase opacity-50">
@@ -52,9 +54,11 @@ export function Transactions({
                   <td align="right" className="w-48">
                     {format(t.date)}
                   </td>
-                  <td align="right">{t.amount}</td>
+                  <td className="font-mono boost" align="right">
+                    {t.amount}
+                  </td>
                   <td align="center" className="uppercase">
-                    {t.type}
+                    <Pill type={t.type} />
                   </td>
                   <td align="left">{t.notes}</td>
                   <td align="center">
@@ -150,4 +154,18 @@ function deleteTransaction(transactionId: number) {
     method: 'DELETE',
     credentials: 'same-origin',
   })
+}
+
+function Pill({ type }: { type: Transaction['type'] }) {
+  let cn =
+    'rounded-full text-xs font-semibold inline-flex justify-center items-center px-3 py-1 opacity-75 '
+  if (type === 'payment') {
+    cn += 'border-green-400 bg-green-200 text-green-800'
+  } else if (type === 'late_fee') {
+    cn += 'border-red-400 bg-red-200 text-red-800'
+  } else if (type === 'rent') {
+    cn += 'border-blue-400 bg-blue-200 text-blue-800'
+  }
+
+  return <div className={cn}>{type.replace('_', ' ')}</div>
 }

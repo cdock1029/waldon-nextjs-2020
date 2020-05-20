@@ -78,7 +78,7 @@ export function useSelectedProperty() {
 }
 
 export function format(str: string, mask?: string) {
-  return formatDate(new Date(str), mask || 'YYYY MMM DD')
+  return formatDate(new Date(str), mask ?? 'YY MMM DD')
 }
 
 // literal local date values, UTC zone

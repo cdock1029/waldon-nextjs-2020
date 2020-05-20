@@ -39,19 +39,19 @@ export default function Index() {
         <h1 className="m-0 text-3xl">
           {property ? property.name : <span>&nbsp;</span>}
         </h1>
-        <small className="font-semibold uppercase opacity-75">
+        <small className="font-semibold text-teal-200 text-opacity-75 uppercase">
           Active leases
         </small>
       </div>
       <div className={`shadow-lg ${styles.dash}`}>
-        <table className="w-full text-sm border-collapse table-auto">
+        <table className="w-full border-collapse table-auto">
           <thead className="uppercase">
             <tr className="bg-gray-700">
               <th></th>
               <th align="right">Unit</th>
               <th align="left">Tenant</th>
-              <th align="left">Start</th>
-              <th align="left">End</th>
+              <th align="center">Start</th>
+              <th align="center">End</th>
               <th align="right">Security deposit</th>
               <th align="right">Rent</th>
               <th align="right">Balance</th>
@@ -66,7 +66,7 @@ export default function Index() {
                     <button
                       onClick={() => toggleExpanded(lease.id)}
                       tabIndex={-1}
-                      className="flex items-center h-8 px-1 text-lg bg-transparent border-none shadow-none hover:bg-transparent hover:shadow-none"
+                      className="flex items-center h-8 px-1 text-teal-200 text-opacity-75 bg-transparent border-none shadow-none hover:bg-transparent hover:shadow-none"
                     >
                       {expanded === lease.id ? (
                         <span>&#9650;</span>
@@ -75,19 +75,31 @@ export default function Index() {
                       )}
                     </button>
                   </td>
-                  <td align="right">{lease.unit}</td>
+                  <td className="boost" align="right">
+                    {lease.unit}
+                  </td>
                   <td className="tenant" title={lease.tenant}>
                     <div className="select-all">{lease.tenant}</div>
                   </td>
-                  <td align="left" title={format(lease.start_date, 'dddd')}>
+                  <td
+                    className="text-sm"
+                    align="center"
+                    title={format(lease.start_date, 'dddd')}
+                  >
                     {format(lease.start_date)}
                   </td>
-                  <td align="left" title={format(lease.end_date, 'dddd')}>
+                  <td
+                    className="text-sm"
+                    align="center"
+                    title={format(lease.end_date, 'dddd')}
+                  >
                     {format(lease.end_date)}
                   </td>
                   <td align="right">{lease.security_deposit}</td>
-                  <td align="right">{lease.rent}</td>
-                  <td align="right" className="">
+                  <td className="boost" align="right">
+                    {lease.rent}
+                  </td>
+                  <td className="boost" align="right">
                     {lease.balance}
                   </td>
                   <td align="center">

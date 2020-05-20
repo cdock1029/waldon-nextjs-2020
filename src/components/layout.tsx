@@ -59,11 +59,6 @@ export function Layout({
       <main className="relative flex-1 w-full max-w-screen-xl mx-auto">
         {children}
       </main>
-      <footer className="py-16">
-        <div className="w-full max-w-screen-xl mx-auto">
-          <img src="/business.svg" alt="building" height="32" width="32" />
-        </div>
-      </footer>
     </div>
   )
 }
