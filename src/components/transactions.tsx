@@ -40,10 +40,10 @@ export function Transactions({
         <table className="w-full">
           <thead className="uppercase opacity-50">
             <tr>
-              <th align="right">Date</th>
+              <th align="center">Date</th>
+              <th align="center">Type</th>
               <th align="right">Amount</th>
               <th align="right">Balance</th>
-              <th align="center">Type</th>
               <th align="left">Notes</th>
               <th align="center">Actions</th>
             </tr>
@@ -52,8 +52,11 @@ export function Transactions({
             {data ? (
               data.map((t) => (
                 <tr key={t.id}>
-                  <td align="right" className="w-48">
+                  <td align="center" className="w-48 font-mono">
                     {format(t.date)}
+                  </td>
+                  <td align="center" className="uppercase">
+                    <Pill type={t.type} />
                   </td>
 
                   <td className="font-mono boost" align="right">
@@ -62,9 +65,7 @@ export function Transactions({
                   <td className="font-mono" align="right">
                     {t.balance}
                   </td>
-                  <td align="center" className="uppercase">
-                    <Pill type={t.type} />
-                  </td>
+
                   <td align="left">{t.notes}</td>
                   <td align="center">
                     <ActionsMenu
