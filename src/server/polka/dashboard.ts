@@ -29,6 +29,7 @@ export const Dashboard = {
         ),
         'lease.*'
       )
+      .whereRaw('now()::date <@ lease.span')
       .orderBy(['lease.unit_id', { column: 'lease.start_date', order: 'desc' }])
       .limit(limit)
       .offset(offset)

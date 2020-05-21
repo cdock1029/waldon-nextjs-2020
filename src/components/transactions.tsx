@@ -42,7 +42,8 @@ export function Transactions({
             <tr>
               <th align="right">Date</th>
               <th align="right">Amount</th>
-              <th>Type</th>
+              <th align="right">Balance</th>
+              <th align="center">Type</th>
               <th align="left">Notes</th>
               <th align="center">Actions</th>
             </tr>
@@ -54,8 +55,12 @@ export function Transactions({
                   <td align="right" className="w-48">
                     {format(t.date)}
                   </td>
+
                   <td className="font-mono boost" align="right">
                     {t.amount}
+                  </td>
+                  <td className="font-mono" align="right">
+                    {t.balance}
                   </td>
                   <td align="center" className="uppercase">
                     <Pill type={t.type} />

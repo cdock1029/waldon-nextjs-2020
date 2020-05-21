@@ -40,6 +40,7 @@ export function PaymentModal(props: PaymentConfirmProps) {
   const cancelRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const dateRef = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
 
   const [paymentAmount, setPaymentAmount] = useState(props.amount)
 
@@ -50,6 +51,7 @@ export function PaymentModal(props: PaymentConfirmProps) {
   }
   async function submitPayment(e: React.FormEvent) {
     e.preventDefault()
+    setBusy(true)
 
     const dateVal = dateRef.current?.valueAsDate!
 
@@ -73,6 +75,7 @@ export function PaymentModal(props: PaymentConfirmProps) {
         async onSuccess(response) {
           const result = await response.json()
           if (result.error) {
+            setBusy(false)
             alert(result.error)
           } else {
             await Promise.all([
@@ -85,10 +88,12 @@ export function PaymentModal(props: PaymentConfirmProps) {
           }
         },
         onError(e: any) {
+          setBusy(false)
           alert(e.message)
         },
       })
     } catch (e) {
+      setBusy(false)
       alert(e.message)
     }
   }

@@ -9,10 +9,12 @@ export const transactionsRoutes = polka()
     const leaseId = parseInt(req.query.leaseId)
     res.status(200).json({
       data: await db<Transaction>('transaction')
-        .select('*')
+        .select(
+          db.raw('transaction.*, sum(amount) over(order by date) as balance')
+        )
         .where('lease_id', '=', leaseId)
         .orderByRaw('date desc, created_at desc')
-        .limit(10),
+        .limit(50),
     })
   })
   .post('/pay_balance', async function payBalance(req, res) {

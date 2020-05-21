@@ -96,10 +96,10 @@ export default function Index() {
                     {format(lease.end_date)}
                   </td>
                   <td align="right">{lease.security_deposit}</td>
-                  <td className="boost" align="right">
+                  <td className="font-mono boost" align="right">
                     {lease.rent}
                   </td>
-                  <td className="boost" align="right">
+                  <td className="font-mono boost" align="right">
                     {lease.balance}
                   </td>
                   <td align="center">

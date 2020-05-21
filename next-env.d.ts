@@ -51,6 +51,7 @@ type Transaction = {
 
   date: string
   amount: string
+  balance: string
   type: 'payment' | 'rent' | 'late_fee'
   notes?: string
 }

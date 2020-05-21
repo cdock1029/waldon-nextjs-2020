@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
-        mono: ["'Liberation Mono'", ...defaultTheme.fontFamily.mono],
+        mono: ["'Fira Mono'", ...defaultTheme.fontFamily.mono],
       },
     },
   },
