@@ -32,14 +32,14 @@ export async function seed(knex: Knex): Promise<any> {
         },
 
         {
-          // 3
+          // 3 huck
           unit_id: 2,
           rent: '$660',
           security_deposit: '$660',
           security_deposit_collected: '2019-09-01',
           start_date: '2019-09-01',
           end_date: '2020-09-01',
-          balance: '$30',
+          // balance: '$30',
         },
         {
           // 4
@@ -65,7 +65,7 @@ export async function seed(knex: Knex): Promise<any> {
           notes: 'parent of 6?',
         },
         {
-          // 6
+          // 6 AEB
           unit_id: 193,
           rent: '$710',
 
@@ -73,7 +73,7 @@ export async function seed(knex: Knex): Promise<any> {
           end_date: '2020-10-01',
 
           parent_id: 5,
-          balance: '$740',
+          // balance: '$740',
           notes: 'child of 5?',
         },
 
@@ -83,7 +83,7 @@ export async function seed(knex: Knex): Promise<any> {
           rent: '$720',
           start_date: '2020-04-01',
           end_date: '2021-04-01',
-          balance: '$30',
+          // balance: '$30',
         },
         {
           // 8

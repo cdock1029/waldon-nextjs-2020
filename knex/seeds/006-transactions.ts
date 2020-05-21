@@ -17,7 +17,52 @@ export async function seed(knex: Knex): Promise<any> {
           amount: '650',
           date: '2019-07-01',
           type: 'rent',
-          notes: 'RENT charge July 2019',
+          notes: 'RENT charge Jul 2019',
+        },
+        {
+          lease_id: 2,
+          amount: '650',
+          date: '2019-08-01',
+          type: 'rent',
+          notes: 'RENT charge Aug 2019',
+        },
+        {
+          lease_id: 2,
+          amount: '650',
+          date: '2019-09-01',
+          type: 'rent',
+          notes: 'RENT charge Sep 2019',
+        },
+        {
+          lease_id: 2,
+          amount: '30',
+          date: '2019-09-30',
+          type: 'late_fee',
+          notes: 'Late fee Sep 2019',
+        },
+        {
+          lease_id: 3,
+          amount: '30',
+          date: '2019-11-30',
+          type: 'late_fee',
+        },
+        {
+          lease_id: 6,
+          amount: '710',
+          date: '2020-02-01',
+          type: 'rent',
+        },
+        {
+          lease_id: 6,
+          amount: '30',
+          date: '2020-01-31',
+          type: 'late_fee',
+        },
+        {
+          lease_id: 7,
+          amount: '30',
+          date: '2020-04-30',
+          type: 'late_fee',
         },
       ])
     })

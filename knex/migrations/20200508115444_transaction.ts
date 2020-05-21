@@ -31,8 +31,10 @@ exports.up = function (knex: Knex) {
   create index wpm_txn_created on transaction(created_at desc);
   create index wpm_txn_updated on transaction(updated_at desc);
 
-  -- per lease partitioned
-  create index wpm_txn_lease_idx on transaction (lease_id, date desc);
+  -- per lease partitioned, both directions
+  create index wpm_txn_desc_lease_idx on transaction (lease_id, date desc);
+  create index wpm_txn_asc_lease_idx on transaction (lease_id, date);
+
   -- total date ordered
   create index wpm_txn_date on transaction (date desc, updated_at desc);
   -- type partitioned, date ordered
