@@ -6,52 +6,30 @@ export const dashboardRoutes = polka().get('/', async function dashboard(
   req,
   res: NextApiResponse
 ) {
+  let { propertyId, limit = '50', offset = '0' } = req.query
+  propertyId = parseInt(propertyId)
+  limit = parseInt(limit)
+  offset = parseInt(offset)
+
   res.status(200).json({
-    data: await Dashboard.leases({ propertyId: req.query.propertyId }),
+    data: await db.many(
+      `select
+        distinct on(lease.unit_id)
+        unit.name unit,
+        string_agg(tenant.full_name, ',') over (partition by lease_tenant.lease_id) tenant,
+        lease.*
+      from lease
+      join unit on unit.id = lease.unit_id
+      join lease_tenant on lease_tenant.lease_id = lease.id
+      join tenant on tenant.id = lease_tenant.tenant_id
+      where
+        unit.property_id = $[propertyId]
+      order by
+        lease.unit_id,
+        lease.start_date desc
+      limit
+        $[limit] offset $[offset]`,
+      { propertyId, limit, offset }
+    ),
   })
 })
-
-export const Dashboard = {
-  async leases({
-    limit = 50,
-    offset = 0,
-    propertyId = undefined,
-  }: { limit?: number; offset?: number; propertyId?: number } = {}) {
-    const query = db<DashboardLease>('lease')
-      .join('unit', 'lease.unit_id', '=', 'unit.id')
-      .join('lease_tenant', 'lease_tenant.lease_id', '=', 'lease.id')
-      .join('tenant', 'tenant.id', '=', 'lease_tenant.tenant_id')
-      .distinctOn('lease.unit_id')
-      .select(
-        'unit.name as unit',
-        db.raw(
-          "string_agg(tenant.full_name, ',') over (partition by lease_tenant.lease_id) as tenant"
-        ),
-        'lease.*'
-      )
-      .whereRaw('now()::date <@ lease.span')
-      .orderBy(['lease.unit_id', { column: 'lease.start_date', order: 'desc' }])
-      .limit(limit)
-      .offset(offset)
-    if (propertyId) {
-      query.where('unit.property_id', '=', propertyId)
-    }
-    return query
-  },
-
-  transactionsByLeaseId({
-    leaseId,
-    limit = 50,
-    offset = 0,
-  }: {
-    leaseId: number
-    limit?: number
-    offset?: number
-  }) {
-    return db('transaction')
-      .select('*')
-      .where('lease_id', '=', leaseId)
-      .limit(limit)
-      .offset(offset)
-  },
-}

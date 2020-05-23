@@ -1,19 +1,26 @@
-import knex from 'knex'
-import { types } from 'pg'
+import pgPromise, { IMain, IDatabase } from 'pg-promise'
 import { builtins } from 'pg-types'
 
-types.setTypeParser(builtins.TIMESTAMP, (val) => {
+let globalAny: {
+  pgp: IMain
+  db: IDatabase<{}>
+} = global as any
+
+globalAny.pgp = (globalAny.pgp as IMain) || pgPromise()
+
+globalAny.pgp.pg.types.setTypeParser(builtins.TIMESTAMP, (val) => {
   return val
 })
 
-let globalAny: any = global
+globalAny.pgp.pg.defaults.max = 3
+/*
+max: 1,
+min: 0,
+idleTimeoutMillis: 120000,
+connectionTimeoutMillis: 10000
+*/
 
 globalAny.db =
-  globalAny.db ||
-  knex({
-    client: 'pg',
-    connection: process.env.DATABASE_URL,
-    pool: { min: 1, max: 5 },
-  })
+  (globalAny.db as IDatabase<{}>) || globalAny.pgp(process.env.DATABASE_URL!)
 
-export const db: knex = globalAny.db
+export const db = globalAny.db

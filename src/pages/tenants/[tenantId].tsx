@@ -40,7 +40,7 @@ export default function Tenant(props) {
 export async function getStaticProps(context) {
   return {
     props: {
-      properties: await db('property').select().orderBy('name'),
+      properties: await db.many('select id, name from property order by name'),
     },
   }
 }

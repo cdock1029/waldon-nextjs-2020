@@ -2,7 +2,7 @@ import polka from 'polka'
 import * as bcrypt from 'bcrypt'
 import { db } from 'server'
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiResponse } from 'next'
 
 export const authRoutes = polka()
   .post('/login', async function signin(req, res: NextApiResponse) {
@@ -13,10 +13,15 @@ export const authRoutes = polka()
         .json({ error: 'invalid request. username and password required' })
     }
 
-    const user = await db<{ password_digest: string }>('wpm_user')
-      .first('username', 'email', 'password_digest', 'created_at', 'updated_at')
-      .where('username', '=', username)
-
+    let user
+    try {
+      user = await db.one(
+        'select username,email,password_digest,created_at,updated_at from wpm_user where username = $1',
+        username
+      )
+    } catch (e) {
+      return res.status(401).send({ error: 'credentials invalid' })
+    }
     if (!user) {
       return res.status(401).send({ error: 'credentials invalid' })
     }
@@ -31,7 +36,6 @@ export const authRoutes = polka()
 
       req.session.set('user', user)
       await req.session.save()
-
       console.log({ session: req.session.get('user') })
       return res.status(200).json({ user })
     } catch (err) {
@@ -50,20 +54,30 @@ export const authRoutes = polka()
         .status(400)
         .json({ error: 'invalid request. missing credentials' })
     }
-    const allowed = await db('allowed_user')
-      .first('username')
-      .where('username', '=', username)
-    if (!allowed) {
+    let result
+    try {
+      result = await db.one(
+        'select username from allowed_user where username = $1',
+        username
+      )
+    } catch (e) {
+      return res.status(403).send('forbidden')
+    }
+    if (!result) {
       return res.status(403).send('forbidden')
     }
 
     try {
       const password_digest = await bcrypt.hash(password, 10)
-      await db('wpm_user').insert({
+      const user = {
         username,
         email,
         password_digest,
-      })
+      }
+      await db.none(
+        'insert into wpm_user(username,email,password_digest) values(${username},${email},${password_digest})',
+        user
+      )
       return res.status(201).json({ data: true })
     } catch (e) {
       return res.status(400).json({

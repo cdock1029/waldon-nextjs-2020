@@ -4,20 +4,17 @@ import type { NextApiResponse } from 'next'
 
 export const propertyRoutes = polka()
   .get('/', async function properties(req, res: NextApiResponse) {
-    res.status(200).json({ data: await Properties.list() })
-  })
-  .get('/:propertyId', async function property(req, res: NextApiResponse) {
     res.status(200).json({
-      data: await Properties.byId({ id: parseInt(req.params.propertyId) }),
+      data: await db.many(
+        'select id, name from property order by name limit 50'
+      ),
     })
   })
-
-export const Properties = {
-  list({ limit = 10, orderBy = 'name' } = {}) {
-    return db('property').select('id', 'name').orderBy(orderBy).limit(limit)
-  },
-
-  async byId({ id }: { id: number }) {
-    return db<Property>('property').first('*').where('id', '=', id)
-  },
-}
+  .get('/:propertyId', async function property(req, res: NextApiResponse) {
+    const propertyId = parseInt(req.params.propertyId)
+    res.status(200).json({
+      data: await db.one('select id, name from property where id = $1', [
+        propertyId,
+      ]),
+    })
+  })

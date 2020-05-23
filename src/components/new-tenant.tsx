@@ -46,6 +46,8 @@ export function NewTenant() {
     for (let [key, val] of Object.entries(raw)) {
       if (val) {
         tenant[key] = val
+      } else {
+        tenant[key] = null
       }
     }
 

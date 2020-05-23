@@ -8,43 +8,45 @@ export const transactionsRoutes = polka()
   .get('/', async function transactions(req, res: NextApiResponse) {
     const leaseId = parseInt(req.query.leaseId)
     res.status(200).json({
-      data: await db<Transaction>('transaction')
-        .select(
-          db.raw('transaction.*, sum(amount) over(order by date) as balance')
-        )
-        .where('lease_id', '=', leaseId)
-        .orderByRaw('date desc, created_at desc')
-        .limit(50),
+      data: await db.many(
+        `select t.*, sum(amount) over(order by date) as balance
+      from transaction t where lease_id = $1
+      order by date desc, created_at desc limit 50`,
+        leaseId
+      ),
     })
   })
   .post('/pay_balance', async function payBalance(req, res) {
     const { leaseId, date } = req.body
-    console.log('pay balance date', date)
     if (typeof leaseId !== 'number') {
       return res.status(422).json({ error: 'Invalid argument' })
     }
-    let query
+    let params: any = [leaseId]
     if (date) {
-      query = `select wpm_pay_balance(${leaseId}, '${date}');`
-    } else {
-      query = `select wpm_pay_balance(${leaseId});`
+      params.push(date)
     }
-    await db.schema.raw(query)
-    return res.status(201).json({ data: 'success' })
+    try {
+      await db.func('wpm_pay_balance', params)
+      return res.status(201).json({ data: 'success' })
+    } catch (e) {
+      return res.status(500).json({ error: e.message })
+    }
   })
   .post('/pay_rent', async function payRent(req, res) {
     const { leaseId, date } = req.body
     if (typeof leaseId !== 'number') {
       return res.status(422).json({ error: 'Invalid argument' })
     }
-    let query
+    let params: any = [leaseId]
     if (date) {
-      query = `select wpm_pay_rent(${leaseId},'${date}');`
-    } else {
-      query = `select wpm_pay_rent(${leaseId});`
+      params.push(date)
     }
-    await db.schema.raw(query)
-    return res.status(201).json({ data: 'success' })
+    try {
+      await db.func('wpm_pay_rent', params)
+      return res.status(201).json({ data: 'success' })
+    } catch (e) {
+      return res.status(500).json({ error: e.message })
+    }
   })
   .post('/pay_custom', async function payCustom(req, res) {
     const { leaseId, amount, date } = req.body
@@ -55,14 +57,23 @@ export const transactionsRoutes = polka()
     ) {
       return res.status(422).json({ error: 'Invalid argument' })
     }
-    await db('transaction').insert({
+    const txn = {
       lease_id: leaseId,
       type: 'payment',
       amount: `-${amount}`,
       date,
       notes: 'custom payment',
-    })
-    return res.status(201).json({ data: 'success' })
+    }
+    try {
+      await db.none(
+        `insert into transaction(lease_id,type,amount,date,notes)
+        values($<lease_id>,$<type>,$<amount>,$<date>,$<notes>)`,
+        txn
+      )
+      return res.status(201).json({ data: 'success' })
+    } catch (e) {
+      return res.status(500).json({ error: e.message })
+    }
   })
   .post('/charge_custom', async function chargeCustom(req, res) {
     const { leaseId, amount, date, type } = req.body
@@ -74,21 +85,29 @@ export const transactionsRoutes = polka()
     ) {
       return res.status(422).json({ error: 'Invalid argument' })
     }
-    await db('transaction').insert({
+    const txn = {
       lease_id: leaseId,
       type,
       amount,
       date,
       // @todo: allow transacton notes to be passed by user
       notes: 'charge applied',
-    })
-    return res.status(201).json({ data: 'success' })
+    }
+    try {
+      await db.none(
+        `insert into transaction(lease_id,type,amount,date,notes)
+        values($<lease_id>,$<type>,$<amount>,$<date>,$<notes>)`,
+        txn
+      )
+      return res.status(201).json({ data: 'success' })
+    } catch (e) {
+      return res.status(500).json({ error: e.message })
+    }
   })
   .delete('/:transactionId', async function deleteTransaction(req, res) {
     try {
       const transactionId = parseInt(req.params.transactionId)
-      console.log('delete txn request', { transactionId })
-      await db('transaction').where('id', '=', transactionId).del()
+      await db.none('delete from transaction where id = $1', transactionId)
       return res.status(204).send('ok')
     } catch (e) {
       return res.status(400).json({ error: 'Invalid request' })
@@ -108,10 +127,16 @@ export const transactionsRoutes = polka()
       // @todo: fix this negative sign checking
       amount: type === 'payment' ? `-${amount}` : amount,
       notes: `transaction updated ${new Date().toLocaleDateString()}`,
+      date,
+      id,
     }
-    if (date) {
-      updateParams.date = date
+    try {
+      await db.none(
+        'update transaction set amount = ${amount},notes = ${notes},date = ${date} where id = ${id}',
+        updateParams
+      )
+      return res.status(200).json({ data: 'success' })
+    } catch (e) {
+      return res.status(500).json({ error: e.message })
     }
-    await db('transaction').where('id', '=', id).update(updateParams)
-    return res.status(200).json({ data: 'success' })
   })
