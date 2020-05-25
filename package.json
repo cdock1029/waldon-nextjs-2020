@@ -15,7 +15,7 @@
     "@reach/alert-dialog": "^0.10.2",
     "@reach/menu-button": "^0.10.2",
     "bcrypt": "^4.0.1",
-    "immer": "^6.0.5",
+    "immer": "^6.0.8",
     "intl-dateformat": "^0.1.4",
     "next": "^9.4.2",
     "next-iron-session": "^4.1.2",
