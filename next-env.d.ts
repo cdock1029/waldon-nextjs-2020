@@ -56,7 +56,7 @@ type Transaction = {
   notes?: string
 }
 
-type DashboardLease = Lease & { unit: string; tenant: string }
+type DashboardLease = Lease & { unit: string; tenant?: string }
 
 type TransactionModalProps = {
   url: string
