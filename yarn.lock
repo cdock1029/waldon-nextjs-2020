@@ -4264,10 +4264,10 @@ neo-async@2.6.1, neo-async@^2.5.0, neo-async@^2.6.1:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
 
-next-iron-session@^4.1.6:
-  version "4.1.6"
-  resolved "https://registry.yarnpkg.com/next-iron-session/-/next-iron-session-4.1.6.tgz#176cd3748542af85c744ca0f9e9e5e4b77f91bb1"
-  integrity sha512-lDHuXMv5KLjVAeS26QPBnYj59gsoyVd06SZvqZZshnuyQQXHSLaRRBOSEdVGmSXrpmcTOXDJsaDn8fWONr+vcw==
+next-iron-session@^4.1.9:
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/next-iron-session/-/next-iron-session-4.1.9.tgz#6175dade1f6294236604e39bd78115670e5023b7"
+  integrity sha512-8AmKWSDXEHc35364zY4y4H0xWLA3f7pqFGBubiuDunxvh159am7sonMoFDPJ7y38UQ8Qa1AHrKMM8qgTGeuhjg==
   dependencies:
     clone "^2.1.2"
     cookie "^0.4.1"
